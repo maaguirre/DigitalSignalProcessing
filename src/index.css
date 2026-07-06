@@ -269,6 +269,16 @@ body {
   position: sticky;
   top: 1.5rem;
   align-self: flex-start;
+  /* When the outline is taller than the viewport, scroll it internally instead
+     of letting the lower items (incl. the active one) fall off-screen. The
+     scrollbar itself is hidden — scrolling is driven by the page, not by hand. */
+  max-height: calc(100vh - 3rem);
+  overflow-y: auto;
+  scrollbar-width: none; /* Firefox */
+  -ms-overflow-style: none; /* old Edge */
+}
+.rail::-webkit-scrollbar {
+  display: none; /* Chrome/Safari */
 }
 .rail-title {
   font-family: var(--font-mono);

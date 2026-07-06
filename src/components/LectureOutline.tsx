@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { type Language, type Localized, pick } from "../i18n.ts";
 import { type Lecture, sectionLabel } from "../content/types.ts";
 import { sectionAnchor } from "./LectureView.tsx";
@@ -20,6 +20,7 @@ export default function LectureOutline({
   language: Language;
 }) {
   const [active, setActive] = useState(0);
+  const railRef = useRef<HTMLElement>(null);
 
   // Track which section is currently at the top of the viewport.
   useEffect(() => {
@@ -36,8 +37,21 @@ export default function LectureOutline({
     return () => window.removeEventListener("scroll", onScroll);
   }, [lecture]);
 
+  // Keep the highlighted item visible when the rail scrolls internally (tall
+  // outlines) — scroll only the rail, never the page.
+  useEffect(() => {
+    const rail = railRef.current;
+    if (!rail) return;
+    const item = rail.querySelector<HTMLElement>(".rail-link.active");
+    if (!item) return;
+    const r = rail.getBoundingClientRect();
+    const it = item.getBoundingClientRect();
+    if (it.top < r.top) rail.scrollTop -= r.top - it.top + 8;
+    else if (it.bottom > r.bottom) rail.scrollTop += it.bottom - r.bottom + 8;
+  }, [active]);
+
   return (
-    <aside className="rail" aria-label={pick(t.title, language)}>
+    <aside className="rail" aria-label={pick(t.title, language)} ref={railRef}>
       <p className="rail-title">{pick(t.title, language)}</p>
       <ul className="rail-list">
         {lecture.sections.map((section, i) => (
