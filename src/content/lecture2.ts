@@ -9,8 +9,8 @@ export const lecture2: Lecture = {
       label: { pt: "Motivação", en: "Motivation" },
       title: { pt: "Reduzir a taxa é decimar", en: "Lowering the rate is decimation" },
       text: {
-        pt: "Muitas vezes queremos diminuir a taxa de amostragem — e reduzir a taxa chama-se decimar. A operação-base é o downsampler ↓D: ele recebe x(n) na taxa Fx e entrega y(m) numa taxa D vezes menor, Fy = Fx/D. Nesta aula estudamos essa operação a fundo: como ela funciona, por que ela é 'estranha' (variante no deslocamento) e o que ela faz com o espectro do sinal.",
-        en: "We often want to lower the sampling rate — and lowering the rate is called decimation. The core operation is the ↓D downsampler: it takes x(n) at rate Fx and delivers y(m) at a rate D times lower, Fy = Fx/D. In this lecture we study this operation in depth: how it works, why it is 'strange' (shift-varying) and what it does to the signal's spectrum.",
+        pt: "Muitas vezes queremos diminuir a taxa de amostragem — e reduzir a taxa chama-se decimar. A operação-base é o downsampler ↓D: ele recebe x(n) na taxa Fx e entrega y(m) numa taxa D vezes menor, Fy = Fx/D. Nesta aula estudamos essa operação a fundo: como ela funciona, por que ela é 'estranha' (variante no deslocamento) e o que ela faz com o espectro do sinal. Mas tudo parte de uma pergunta bem concreta: como, na prática, conseguimos de fato diminuir a taxa de um sinal que já está amostrado?",
+        en: "We often want to lower the sampling rate — and lowering the rate is called decimation. The core operation is the ↓D downsampler: it takes x(n) at rate Fx and delivers y(m) at a rate D times lower, Fy = Fx/D. In this lecture we study this operation in depth: how it works, why it is 'strange' (shift-varying) and what it does to the signal's spectrum. But it all starts from a very concrete question: in practice, how do we actually lower the rate of a signal that is already sampled?",
       },
     },
     {
@@ -277,8 +277,8 @@ export const lecture2: Lecture = {
       kind: "playground",
       title: { pt: "Sem aliasing × com aliasing", en: "No aliasing vs aliasing" },
       intro: {
-        pt: "O espectro conta a história. Em cima, |X| do sinal — um triângulo de banda ω_c — com as linhas ±π/D marcadas. Embaixo, o espectro depois de ↓D: as D cópias (a central em teal, as vizinhas em âmbar), cada uma com pico 1/D, e a soma Y em destaque. Diminua ω_c até o sinal caber em ±π/D: as cópias se separam e a decimação é limpa. Aumente ω_c além de π/D: a parte do sinal que ultrapassa o limite fica em vermelho, as cópias se sobrepõem e a soma sobe — aliasing. Mude também D.",
-        en: "The spectrum tells the story. On top, the signal's |X| — a triangular band of width ω_c — with the ±π/D lines marked. Below, the spectrum after ↓D: the D copies (the central one teal, the neighbours amber), each peaking at 1/D, and the sum Y highlighted. Lower ω_c until the signal fits within ±π/D: the copies separate and decimation is clean. Raise ω_c past π/D: the part of the signal beyond the limit turns red, the copies overlap and the sum rises — aliasing. Change D too.",
+        pt: "O espectro conta a história. Em cima, |X| do sinal — um triângulo de banda ω_c — com as linhas ±π/D marcadas. Embaixo, o espectro depois de ↓D: as D cópias (a central em azul, as vizinhas em laranja), cada uma com pico 1/D, e a soma Y em destaque. Diminua ω_c até o sinal caber em ±π/D: as cópias se separam e a decimação é limpa. Aumente ω_c além de π/D: a parte do sinal que ultrapassa o limite fica em vermelho, as cópias se sobrepõem e a soma sobe — aliasing. Mude também D.",
+        en: "The spectrum tells the story. On top, the signal's |X| — a triangular band of width ω_c — with the ±π/D lines marked. Below, the spectrum after ↓D: the D copies (the central one blue, the neighbours orange), each peaking at 1/D, and the sum Y highlighted. Lower ω_c until the signal fits within ±π/D: the copies separate and decimation is clean. Raise ω_c past π/D: the part of the signal beyond the limit turns red, the copies overlap and the sum rises — aliasing. Change D too.",
       },
       instrument: { component: "DecimationSpectrumView" },
     },
@@ -289,8 +289,8 @@ export const lecture2: Lecture = {
         en: "The formula on the unit circle",
       },
       intro: {
-        pt: "Aqui a fórmula (9.17) vira imagem. No círculo (à esquerda), os D pontos que a soma avalia; ao lado, o espectro X amostrado neles. Embaixo, o resultado: cada cópia de X — esticada por D e deslocada — desenhada separadamente (tracejadas em âmbar) e a soma Y em destaque. Repare como as cópias se 'dobram' e invadem a banda base; quando duas se sobrepõem, aparece energia onde não deveria — é o aliasing. Anime ω_y ou mude D.",
-        en: "Here formula (9.17) becomes a picture. On the circle (left), the D points the sum evaluates; beside it, the spectrum X sampled at them. Below, the result: each copy of X — stretched by D and shifted — drawn separately (dashed amber) and the sum Y highlighted. Notice how the copies 'fold' and invade the baseband; when two overlap, energy appears where it shouldn't — that is aliasing. Animate ω_y or change D.",
+        pt: "Aqui a fórmula (9.17) vira imagem. No círculo (à esquerda), os D pontos que a soma avalia; ao lado, o espectro X amostrado neles. Embaixo, o resultado: cada cópia de X — esticada por D e deslocada — desenhada separadamente (tracejadas em laranja) e a soma Y em destaque. Repare como as cópias se 'dobram' e invadem a banda base; quando duas se sobrepõem, aparece energia onde não deveria — é o aliasing. Anime ω_y ou mude D.",
+        en: "Here formula (9.17) becomes a picture. On the circle (left), the D points the sum evaluates; beside it, the spectrum X sampled at them. Below, the result: each copy of X — stretched by D and shifted — drawn separately (dashed orange) and the sum Y highlighted. Notice how the copies 'fold' and invade the baseband; when two overlap, energy appears where it shouldn't — that is aliasing. Animate ω_y or change D.",
       },
       instrument: { component: "AliasCircleView" },
     },
@@ -298,8 +298,8 @@ export const lecture2: Lecture = {
       kind: "playground",
       title: { pt: "Aliasing ao vivo", en: "Aliasing live" },
       intro: {
-        pt: "Mova a frequência do sinal f e o fator D. A zona verde é a nova banda base [0, fs/2D]. Enquanto f fica nela, tudo bem. Quando f passa do novo Nyquist (zona âmbar), o sinal não some — ele 'dobra' e reaparece dentro da banda base, numa frequência falsa: isso é o aliasing.",
-        en: "Move the signal frequency f and the factor D. The green zone is the new baseband [0, fs/2D]. While f stays there, all is fine. When f passes the new Nyquist (amber zone), the signal doesn't vanish — it 'folds' and reappears inside the baseband at a false frequency: that is aliasing.",
+        pt: "Mova a frequência do sinal f e o fator D. A zona verde é a nova banda base [0, fs/2D]. Enquanto f fica nela, tudo bem. Quando f passa do novo Nyquist (zona laranja), o sinal não some — ele 'dobra' e reaparece dentro da banda base, numa frequência falsa: isso é o aliasing.",
+        en: "Move the signal frequency f and the factor D. The green zone is the new baseband [0, fs/2D]. While f stays there, all is fine. When f passes the new Nyquist (orange zone), the signal doesn't vanish — it 'folds' and reappears inside the baseband at a false frequency: that is aliasing.",
       },
       instrument: { component: "AliasingView" },
     },

@@ -2,7 +2,7 @@ import { useState } from "react";
 import { type Language, type Localized, pick } from "../i18n.ts";
 
 const t = {
-  band: { pt: "Largura de banda do sinal ω_c", en: "Signal bandwidth ω_c" },
+  band: { pt: "Largura de banda ω_c", en: "Bandwidth ω_c" },
   factor: { pt: "Fator de decimação D", en: "Decimation factor D" },
   clean: { pt: "Sem aliasing — cópias separadas", en: "No aliasing — copies separated" },
   alias: { pt: "Aliasing — cópias se sobrepõem", en: "Aliasing — copies overlap" },

@@ -2,6 +2,10 @@ import type { Lecture } from "./types.ts";
 import type { Localized } from "../i18n.ts";
 import { lecture1 } from "./lecture1.ts";
 import { lecture2 } from "./lecture2.ts";
+import { lecture3 } from "./lecture3.ts";
+import { lecture4 } from "./lecture4.ts";
+import { lecture5 } from "./lecture5.ts";
+import { lecture6 } from "./lecture6.ts";
 
 export type CatalogEntry = {
   id: number;
@@ -26,22 +30,22 @@ export const lectureCatalog: CatalogEntry[] = [
   {
     id: 3,
     title: { pt: "O decimador ideal", en: "The ideal decimator" },
-    available: false,
+    available: true,
   },
   {
     id: 4,
     title: { pt: "Upsampler ↑I e imaging", en: "Upsampler ↑I and imaging" },
-    available: false,
+    available: true,
   },
   {
     id: 5,
     title: { pt: "Conversão racional I/D", en: "Rational I/D conversion" },
-    available: false,
+    available: true,
   },
   {
     id: 6,
     title: { pt: "Projeto FIR: casos inteiros", en: "FIR design: integer cases" },
-    available: false,
+    available: true,
   },
   {
     id: 7,
@@ -59,4 +63,8 @@ export const lectureCatalog: CatalogEntry[] = [
 export const lectures: Record<number, Lecture> = {
   1: lecture1,
   2: lecture2,
+  3: lecture3,
+  4: lecture4,
+  5: lecture5,
+  6: lecture6,
 };

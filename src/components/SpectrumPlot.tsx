@@ -1,15 +1,22 @@
 import type { Spectrum } from "../dsp";
+import { type Language, pick } from "../i18n.ts";
 
 type SpectrumPlotProps = {
   spectrum: Spectrum;
+  language: Language;
   height?: number;
   label?: string;
+  cutoffFreq?: number;
+  cutoffLabel?: string;
 };
 
 export default function SpectrumPlot({
   spectrum,
+  language,
   height = 220,
   label = "Magnitude spectrum",
+  cutoffFreq,
+  cutoffLabel,
 }: SpectrumPlotProps) {
   const { frequencies, magnitudes } = spectrum;
 
@@ -64,6 +71,37 @@ export default function SpectrumPlot({
         );
       })}
 
+      {cutoffFreq !== undefined && cutoffFreq < maxFreq && (
+        <g>
+          <rect
+            x={xOf(cutoffFreq)}
+            y={pad.top}
+            width={pad.left + plotW - xOf(cutoffFreq)}
+            height={plotH}
+            fill="var(--alias)"
+            fillOpacity="0.08"
+          />
+          <line
+            x1={xOf(cutoffFreq)}
+            y1={pad.top}
+            x2={xOf(cutoffFreq)}
+            y2={pad.top + plotH}
+            stroke="var(--brand-trace)"
+            strokeDasharray="4 3"
+          />
+          <text
+            x={xOf(cutoffFreq)}
+            y={pad.top + 11}
+            fill="var(--brand-trace)"
+            fontSize="11"
+            fontFamily="var(--font-mono)"
+            textAnchor="middle"
+          >
+            {cutoffLabel ?? `${cutoffFreq.toFixed(0)} Hz`}
+          </text>
+        </g>
+      )}
+
       <text
         x={pad.left}
         y={height - 10}
@@ -92,7 +130,7 @@ export default function SpectrumPlot({
         fontFamily="var(--font-body)"
         textAnchor="middle"
       >
-        frequency
+        {pick({ pt: "frequência", en: "frequency" }, language)}
       </text>
     </svg>
   );

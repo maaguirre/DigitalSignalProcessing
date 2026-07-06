@@ -1,21 +1,32 @@
+import { type Language, pick } from "../i18n.ts";
+
 type StemPlotProps = {
   samples: number[];
+  language: Language;
   height?: number;
   label?: string;
   color?: string;
   yMax?: number; // fix the amplitude scale so several plots stay comparable
   keep?: number; // dim samples whose index is not a multiple of `keep`
+  reference?: number[]; // faint grey curve behind the stems (the sampled signal)
+  dt?: number; // time between samples (for a shared time axis); default 1
+  xDomain?: number; // x-axis span in time units; default n-1 (fill the width)
 };
 
 // Discrete-time stem plot with numbered axes: a stem + dot per sample over a
-// baseline. x axis is the sample index n; y axis is amplitude.
+// baseline. x axis is the sample index n; y axis is amplitude. `dt`/`xDomain`
+// let several plots share one time axis so their samples line up.
 export default function StemPlot({
   samples,
+  language,
   height = 170,
   label = "Discrete-time signal",
   color = "var(--signal)",
   yMax,
   keep,
+  reference,
+  dt = 1,
+  xDomain,
 }: StemPlotProps) {
   const width = 600;
   const pad = { left: 34, right: 14, top: 12, bottom: 26 };
@@ -28,8 +39,9 @@ export default function StemPlot({
   const yBot = pad.top + plotH;
   const baseline = pad.top + plotH / 2;
 
+  const den = xDomain ?? n - 1;
   const xOf = (i: number) =>
-    pad.left + (n <= 1 ? plotW / 2 : (i / (n - 1)) * plotW);
+    pad.left + (den <= 0 ? plotW / 2 : ((i * dt) / den) * plotW);
   const yOf = (v: number) => baseline - (v / maxAbs) * (plotH / 2) * 0.92;
   const dotR = Math.max(1, Math.min(3, plotW / n / 3));
 
@@ -51,6 +63,18 @@ export default function StemPlot({
         y2={baseline}
         stroke="var(--line)"
       />
+
+      {reference && reference.length > 1 && (
+        <path
+          d={reference
+            .map((v, j) => `${j === 0 ? "M" : "L"} ${(pad.left + (j / (reference.length - 1)) * plotW).toFixed(1)} ${yOf(v).toFixed(1)}`)
+            .join(" ")}
+          fill="none"
+          stroke="var(--ink-soft)"
+          strokeWidth="1.2"
+          strokeOpacity="0.5"
+        />
+      )}
 
       <text x={pad.left + 2} y={yTop - 2} fill={axis} fontSize="10" fontFamily="var(--font-body)" textAnchor="start">
         x[n]
@@ -82,9 +106,9 @@ export default function StemPlot({
         0
       </text>
       <text x={pad.left + plotW / 2} y={height - 6} fill={axis} fontSize="10" fontFamily="var(--font-body)" textAnchor="middle">
-        n (amostra)
+        {pick({ pt: "n (amostra)", en: "n (sample)" }, language)}
       </text>
-      <text x={pad.left + plotW} y={height - 6} fill={axis} fontSize="10" fontFamily="var(--font-mono)" textAnchor="end">
+      <text x={xOf(n - 1)} y={height - 6} fill={axis} fontSize="10" fontFamily="var(--font-mono)" textAnchor="middle">
         {n - 1}
       </text>
     </svg>

@@ -4,9 +4,11 @@ import { type Language, type Localized, pick } from "../i18n.ts";
 
 const t = {
   rate: { pt: "Taxa de amostragem Fs (Hz)", en: "Sampling rate Fs (Hz)" },
+  time: { pt: "tempo (s)", en: "time (s)" },
+  half: { pt: "0,5", en: "0.5" },
 } satisfies Record<string, Localized>;
 
-// Slide 2: a continuous signal (a 2 Hz tone over a 1 s window) and the samples
+// A continuous signal (a 2 Hz tone over a 1 s window) and the samples
 // taken from it at rate Fs. Axes carry real numbers; the readout tracks the
 // slider (Fs, the interval T = 1/Fs, and the sample count).
 export default function SamplingView({ language }: { language: Language }) {
@@ -82,9 +84,9 @@ export default function SamplingView({ language }: { language: Language }) {
 
         {/* x ticks: time */}
         <text x={pad.left} y={height - 16} fill={axis} fontSize="11" fontFamily="var(--font-mono)" textAnchor="middle">0</text>
-        <text x={xOf(0.5)} y={height - 16} fill={axis} fontSize="11" fontFamily="var(--font-mono)" textAnchor="middle">0,5</text>
+        <text x={xOf(0.5)} y={height - 16} fill={axis} fontSize="11" fontFamily="var(--font-mono)" textAnchor="middle">{pick(t.half, language)}</text>
         <text x={pad.left + plotW} y={height - 16} fill={axis} fontSize="11" fontFamily="var(--font-mono)" textAnchor="middle">1</text>
-        <text x={pad.left + plotW / 2} y={height - 4} fill={axis} fontSize="11" fontFamily="var(--font-body)" textAnchor="middle">tempo (s)</text>
+        <text x={pad.left + plotW / 2} y={height - 4} fill={axis} fontSize="11" fontFamily="var(--font-body)" textAnchor="middle">{pick(t.time, language)}</text>
         <text x={pad.left - 30} y={pad.top - 4} fill={axis} fontSize="11" fontFamily="var(--font-body)" textAnchor="start">amplitude</text>
       </svg>
 

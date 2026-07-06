@@ -1,18 +1,18 @@
 import { useState } from "react";
-import { generateSine, downsample } from "../dsp";
+import { generateSine, upsample } from "../dsp";
 import StemPlot from "./StemPlot.tsx";
 import { type Language, type Localized, pick } from "../i18n.ts";
 
 const t = {
-  factor: { pt: "Fator de decimação D", en: "Decimation factor D" },
+  factor: { pt: "Fator de interpolação I", en: "Interpolation factor I" },
 } satisfies Record<string, Localized>;
 
-// Slide 4: the downsampler in time. x(n) keeps 1 of every D samples (highlighted);
-// y(m) = x(mD) is the compressed result.
-export default function DownsampleView({
+// The upsampler in time. v(m) = x(m/I): the original samples (highlighted) with
+// I-1 zeros interlaced between them; the signal is I times longer.
+export default function UpsampleView({
   language,
-  numSamples = 60,
-  toneFreq = 2,
+  numSamples = 10,
+  toneFreq = 1,
 }: {
   language: Language;
   numSamples?: number;
@@ -21,15 +21,15 @@ export default function DownsampleView({
   const [factor, setFactor] = useState(3);
 
   const x = generateSine(toneFreq, numSamples, numSamples);
-  const y = downsample(x, factor);
+  const v = upsample(x, factor);
 
   const inLabel: Localized = {
-    pt: `x(n) — mantendo 1 a cada ${factor} amostras`,
-    en: `x(n) — keeping 1 of every ${factor} samples`,
+    pt: "x(n) — o sinal original",
+    en: "x(n) — the original signal",
   };
   const outLabel: Localized = {
-    pt: `y(m) = x(${factor}m) — o sinal decimado`,
-    en: `y(m) = x(${factor}m) — the decimated signal`,
+    pt: `v(m) — com ${factor - 1} zero(s) entre as amostras (↑${factor})`,
+    en: `v(m) — with ${factor - 1} zero(s) between samples (↑${factor})`,
   };
 
   return (
@@ -43,7 +43,7 @@ export default function DownsampleView({
           <input
             type="range"
             min={2}
-            max={16}
+            max={6}
             step={1}
             value={factor}
             onChange={(e) => setFactor(Number(e.target.value))}
@@ -52,10 +52,10 @@ export default function DownsampleView({
       </div>
 
       <p className="plot-label">{pick(inLabel, language)}</p>
-      <StemPlot language={language} samples={x} yMax={1} keep={factor} label={pick(inLabel, language)} />
+      <StemPlot language={language} samples={x} yMax={1} label={pick(inLabel, language)} />
 
       <p className="plot-label">{pick(outLabel, language)}</p>
-      <StemPlot language={language} samples={y} yMax={1} label={pick(outLabel, language)} />
+      <StemPlot language={language} samples={v} yMax={1} keep={factor} label={pick(outLabel, language)} />
     </div>
   );
 }

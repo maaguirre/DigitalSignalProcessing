@@ -30,4 +30,9 @@ export const reviewCatalog: ReviewEntry[] = [
     title: { pt: "DFT e FFT", en: "DFT and FFT" },
     available: false,
   },
+  {
+    slug: "fir-design",
+    title: { pt: "Projeto de filtros FIR", en: "FIR filter design" },
+    available: false,
+  },
 ];

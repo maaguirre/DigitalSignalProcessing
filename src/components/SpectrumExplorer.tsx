@@ -24,6 +24,10 @@ const t = {
   decimation: { pt: "Fator de decimação D", en: "Decimation factor D" },
   aliasing: { pt: "Aliasing!", en: "Aliasing!" },
   noAliasing: { pt: "Sem aliasing", en: "No aliasing" },
+  removed: { pt: "Removido pelo filtro", en: "Removed by the filter" },
+  filterOn: { pt: "Filtro anti-aliasing: ligado", en: "Anti-aliasing filter: on" },
+  filterOff: { pt: "Filtro anti-aliasing: desligado", en: "Anti-aliasing filter: off" },
+  cutoff: { pt: "corte π/D", en: "cutoff π/D" },
 } satisfies Record<string, Localized>;
 
 export default function SpectrumExplorer({
@@ -36,17 +40,23 @@ export default function SpectrumExplorer({
 }: SpectrumExplorerProps) {
   const [frequency, setFrequency] = useState(initialFrequency);
   const [factor, setFactor] = useState(initialFactor);
+  const [filterOn, setFilterOn] = useState(true);
 
   const original = generateSine(frequency, sampleRate, numSamples);
-  const decimated = downsample(original, factor);
   const newRate = sampleRate / factor;
+  const newNyquist = newRate / 2;
+  // Ideal anti-aliasing lowpass: cutoff = Fs/(2D) = new Nyquist. A single tone
+  // above it is simply removed before downsampling.
+  const cutoff = newNyquist;
+  const removed = filterOn && frequency > cutoff;
+  const toDecimate = removed ? new Array<number>(numSamples).fill(0) : original;
+  const decimated = downsample(toDecimate, factor);
 
   const originalSpectrum = magnitudeSpectrum(original, sampleRate);
   const decimatedSpectrum = magnitudeSpectrum(decimated, newRate);
 
-  const newNyquist = newRate / 2;
   const apparent = foldFrequency(frequency, newRate);
-  const isAliasing = frequency > newNyquist;
+  const isAliasing = !filterOn && frequency > newNyquist;
 
   const originalLabel: Localized = {
     pt: `Original — fs = ${sampleRate} Hz (Nyquist ${sampleRate / 2} Hz)`,
@@ -56,10 +66,27 @@ export default function SpectrumExplorer({
     pt: `Após ↓${factor} — fs/D = ${newRate} Hz (Nyquist ${newNyquist} Hz)`,
     en: `After ↓${factor} — fs/D = ${newRate} Hz (Nyquist ${newNyquist} Hz)`,
   };
-  const readout: Localized = {
-    pt: `Tom em ${frequency} Hz → após ↓${factor}, o pico aparece em ${apparent} Hz.`,
-    en: `Tone at ${frequency} Hz → after ↓${factor}, the peak appears at ${apparent} Hz.`,
-  };
+  const readout: Localized = removed
+    ? {
+        pt: `O filtro (corte ${cutoff} Hz) removeu o sinal de ${frequency} Hz antes do ↓${factor} — nada dobra.`,
+        en: `The filter (cutoff ${cutoff} Hz) removed the ${frequency} Hz signal before ↓${factor} — nothing folds.`,
+      }
+    : isAliasing
+      ? {
+          pt: `Sinal em ${frequency} Hz → após ↓${factor}, um pico FALSO aparece em ${apparent} Hz.`,
+          en: `Signal at ${frequency} Hz → after ↓${factor}, a FALSE peak appears at ${apparent} Hz.`,
+        }
+      : {
+          pt: `Sinal em ${frequency} Hz → após ↓${factor}, o pico aparece em ${apparent} Hz.`,
+          en: `Signal at ${frequency} Hz → after ↓${factor}, the peak appears at ${apparent} Hz.`,
+        };
+
+  const badgeClass = removed || !isAliasing ? "badge badge--ok" : "badge badge--alias";
+  const badgeText: Localized = removed
+    ? t.removed
+    : isAliasing
+      ? t.aliasing
+      : t.noAliasing;
 
   return (
     <div className="instrument">
@@ -93,25 +120,34 @@ export default function SpectrumExplorer({
             onChange={(e) => setFactor(Number(e.target.value))}
           />
         </label>
+
+        <button
+          className="toggle-btn present-btn"
+          onClick={() => setFilterOn((f) => !f)}
+        >
+          {filterOn ? pick(t.filterOn, language) : pick(t.filterOff, language)}
+        </button>
       </div>
 
       <p className="plot-label">{pick(originalLabel, language)}</p>
       <SpectrumPlot
         spectrum={originalSpectrum}
+        language={language}
         label={pick(originalLabel, language)}
+        cutoffFreq={filterOn ? cutoff : undefined}
+        cutoffLabel={pick(t.cutoff, language)}
       />
 
       <p className="plot-label">{pick(afterLabel, language)}</p>
       <SpectrumPlot
         spectrum={decimatedSpectrum}
+        language={language}
         label={pick(afterLabel, language)}
       />
 
       <p className="readout">
         {pick(readout, language)}{" "}
-        <span className={isAliasing ? "badge badge--alias" : "badge badge--ok"}>
-          {isAliasing ? pick(t.aliasing, language) : pick(t.noAliasing, language)}
-        </span>
+        <span className={badgeClass}>{pick(badgeText, language)}</span>
       </p>
     </div>
   );

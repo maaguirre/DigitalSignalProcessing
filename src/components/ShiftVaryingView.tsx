@@ -70,10 +70,10 @@ export default function ShiftVaryingView({
       </div>
 
       <p className="plot-label">{pick(labelA, language)}</p>
-      <StemPlot samples={pathA} yMax={1} label={pick(labelA, language)} />
+      <StemPlot language={language} samples={pathA} yMax={1} label={pick(labelA, language)} />
 
       <p className="plot-label">{pick(labelB, language)}</p>
-      <StemPlot samples={pathB} yMax={1} label={pick(labelB, language)} />
+      <StemPlot language={language} samples={pathB} yMax={1} label={pick(labelB, language)} />
 
       <p className="readout">
         <span className={equal ? "badge badge--ok" : "badge badge--alias"}>

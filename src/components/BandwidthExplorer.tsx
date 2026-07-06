@@ -5,9 +5,9 @@ const t = {
   cutoff: { pt: "Largura de banda fc", en: "Bandwidth fc" },
 } satisfies Record<string, Localized>;
 
-// Fig 9.1 (interactive): a signal whose energy sits in a low band [0, fc]. As fc
+// Interactive: a signal whose energy sits in a low band [0, fc]. As fc
 // shrinks, the minimum rate 2·fc drops and the achievable decimation factor
-// D = ⌊Fs / 2·fc⌋ grows — the book's motivation, made visible.
+// D = ⌊Fs / 2·fc⌋ grows — the motivation, made visible.
 export default function BandwidthExplorer({
   language,
   sampleRate = 20,

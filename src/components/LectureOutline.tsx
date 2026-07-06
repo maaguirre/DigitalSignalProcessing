@@ -47,7 +47,9 @@ export default function LectureOutline({
               aria-current={i === active ? "true" : undefined}
               onClick={() => scrollToSection(sectionAnchor(i))}
             >
-              {pick(sectionLabel(section), language)}
+              <span className="rail-kind">{pick(sectionLabel(section), language)}</span>
+              {" · "}
+              {pick(section.title, language)}
             </button>
           </li>
         ))}

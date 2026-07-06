@@ -50,7 +50,7 @@ function BottomAxis({
   );
 }
 
-function TimeLine({ data }: { data: number[] }) {
+function TimeLine({ data, language }: { data: number[]; language: Language }) {
   const path = data
     .map((v, i) => {
       const x = P.left + (i / (data.length - 1)) * pw;
@@ -59,7 +59,7 @@ function TimeLine({ data }: { data: number[] }) {
     .join(" ");
   const ticks = [0, 0.5, 1].map((frac) => ({
     x: P.left + frac * pw,
-    label: frac === 0.5 ? "0,5" : `${frac}`,
+    label: frac === 0.5 ? pick({ pt: "0,5", en: "0.5" }, language) : `${frac}`,
   }));
   return (
     <svg viewBox={`0 0 ${W} ${H}`} width="100%" style={{ display: "block" }}>
@@ -70,7 +70,7 @@ function TimeLine({ data }: { data: number[] }) {
   );
 }
 
-function TimeStem({ samples }: { samples: number[] }) {
+function TimeStem({ samples, language }: { samples: number[]; language: Language }) {
   const n = samples.length;
   const xOf = (i: number) => P.left + (i / (n - 1)) * pw;
   const ticks = [0, Math.floor((n - 1) / 2), n - 1].map((k) => ({
@@ -89,7 +89,7 @@ function TimeStem({ samples }: { samples: number[] }) {
           </g>
         );
       })}
-      <BottomAxis ticks={ticks} title="n (amostra)" />
+      <BottomAxis ticks={ticks} title={pick({ pt: "n (amostra)", en: "n (sample)" }, language)} />
     </svg>
   );
 }
@@ -184,7 +184,7 @@ export default function SamplingFigure({ language }: { language: Language }) {
       <div className="fig-row">
         <div className="fig-cell">
           <p className="plot-label">{pick(labels.sigT, language)}</p>
-          <TimeLine data={cont} />
+          <TimeLine data={cont} language={language} />
         </div>
         <div className="fig-cell">
           <p className="plot-label">{pick(labels.sigF, language)}</p>
@@ -195,7 +195,7 @@ export default function SamplingFigure({ language }: { language: Language }) {
       <div className="fig-row">
         <div className="fig-cell">
           <p className="plot-label">{pick(labels.sampT, language)}</p>
-          <TimeStem samples={samp} />
+          <TimeStem samples={samp} language={language} />
         </div>
         <div className="fig-cell">
           <p className="plot-label">{pick(labels.sampF, language)}</p>
@@ -206,7 +206,7 @@ export default function SamplingFigure({ language }: { language: Language }) {
       <div className="fig-row">
         <div className="fig-cell">
           <p className="plot-label">{pick(labels.outT, language)}</p>
-          <TimeLine data={cont} />
+          <TimeLine data={cont} language={language} />
         </div>
         <div className="fig-cell">
           <p className="plot-label">{pick(labels.outF, language)}</p>

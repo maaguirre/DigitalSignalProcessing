@@ -6,6 +6,8 @@ const t = {
   angle: { pt: "Ângulo ω (rad)", en: "Angle ω (rad)" },
   play: { pt: "▶ Animar", en: "▶ Play" },
   pause: { pt: "⏸ Pausar", en: "⏸ Pause" },
+  zplane: { pt: "Plano z — z = e^{jω}", en: "z-plane — z = e^{jω}" },
+  spectrum: { pt: "|X(e^{jω})| — o espectro", en: "|X(e^{jω})| — the spectrum" },
 } satisfies Record<string, Localized>;
 
 const TAU = 2 * Math.PI;
@@ -96,7 +98,7 @@ export default function UnitCircleView({ language }: { language: Language }) {
 
       <div className="fig-row">
         <div className="fig-cell" style={{ flexBasis: "220px", flexGrow: 0 }}>
-          <p className="plot-label">Plano z — z = e^{"{jω}"}</p>
+          <p className="plot-label">{pick(t.zplane, language)}</p>
           <svg viewBox={`0 0 ${CW} ${CH}`} width="100%" style={{ display: "block" }}>
             <line x1={cx - r - 12} y1={cy} x2={cx + r + 12} y2={cy} stroke="var(--line)" />
             <line x1={cx} y1={cy - r - 12} x2={cx} y2={cy + r + 12} stroke="var(--line)" />
@@ -108,7 +110,7 @@ export default function UnitCircleView({ language }: { language: Language }) {
           </svg>
         </div>
         <div className="fig-cell">
-          <p className="plot-label">|X(e^{"{jω}"})| — o espectro</p>
+          <p className="plot-label">{pick(t.spectrum, language)}</p>
           <svg viewBox={`0 0 ${SW} ${SH}`} width="100%" style={{ display: "block" }}>
             <line x1={sp.left} y1={sp.top} x2={sp.left} y2={sBase} stroke="var(--line)" />
             <line x1={sp.left} y1={sBase} x2={sp.left + spw} y2={sBase} stroke="var(--line)" />

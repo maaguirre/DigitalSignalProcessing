@@ -22,8 +22,25 @@ import UnitCircleView from "./UnitCircleView.tsx";
 import AliasingView from "./AliasingView.tsx";
 import AliasCircleView from "./AliasCircleView.tsx";
 import DecimationSpectrumView from "./DecimationSpectrumView.tsx";
+import DecimatorStructureView from "./DecimatorStructureView.tsx";
+import IdealDecimatorView from "./IdealDecimatorView.tsx";
+import UpsampleView from "./UpsampleView.tsx";
+import InterpolatorStructureView from "./InterpolatorStructureView.tsx";
+import InterpolatorView from "./InterpolatorView.tsx";
+import ImagingCircleView from "./ImagingCircleView.tsx";
+import InterpolatorGainView from "./InterpolatorGainView.tsx";
+import RationalStructureView from "./RationalStructureView.tsx";
+import RationalTimeView from "./RationalTimeView.tsx";
+import ConvolutionView from "./ConvolutionView.tsx";
+import TimeVaryingFilterView from "./TimeVaryingFilterView.tsx";
+import FilterDesigner from "./FilterDesigner.tsx";
+import FIRInterpolationView from "./FIRInterpolationView.tsx";
+import FIRDecimationView from "./FIRDecimationView.tsx";
+import FIRInterpSpectrumView from "./FIRInterpSpectrumView.tsx";
+import FIRDecimSpectrumView from "./FIRDecimSpectrumView.tsx";
 
-function renderInstrument(name: InstrumentName, language: Language) {
+function renderInstrument(name: InstrumentName, language: Language, config?: Record<string, unknown>) {
+  const initialM = typeof config?.initialM === "number" ? (config.initialM as number) : undefined;
   switch (name) {
     case "SpectrumExplorer":
       return <SpectrumExplorer language={language} />;
@@ -45,6 +62,38 @@ function renderInstrument(name: InstrumentName, language: Language) {
       return <AliasCircleView language={language} />;
     case "DecimationSpectrumView":
       return <DecimationSpectrumView language={language} />;
+    case "DecimatorStructureView":
+      return <DecimatorStructureView language={language} />;
+    case "IdealDecimatorView":
+      return <IdealDecimatorView language={language} />;
+    case "UpsampleView":
+      return <UpsampleView language={language} />;
+    case "InterpolatorStructureView":
+      return <InterpolatorStructureView language={language} />;
+    case "InterpolatorView":
+      return <InterpolatorView language={language} />;
+    case "ImagingCircleView":
+      return <ImagingCircleView language={language} />;
+    case "InterpolatorGainView":
+      return <InterpolatorGainView language={language} />;
+    case "RationalStructureView":
+      return <RationalStructureView language={language} />;
+    case "RationalTimeView":
+      return <RationalTimeView language={language} />;
+    case "ConvolutionView":
+      return <ConvolutionView language={language} />;
+    case "TimeVaryingFilterView":
+      return <TimeVaryingFilterView language={language} />;
+    case "FilterDesigner":
+      return <FilterDesigner language={language} />;
+    case "FIRInterpolationView":
+      return <FIRInterpolationView language={language} initialM={initialM} />;
+    case "FIRDecimationView":
+      return <FIRDecimationView language={language} initialM={initialM} />;
+    case "FIRInterpSpectrumView":
+      return <FIRInterpSpectrumView language={language} initialM={initialM} />;
+    case "FIRDecimSpectrumView":
+      return <FIRDecimSpectrumView language={language} initialM={initialM} />;
     case "BandwidthExplorer":
       return <BandwidthExplorer language={language} />;
     case "RateConversionView":
@@ -131,7 +180,7 @@ export function renderSection(
           <p className="section-text section-lead">
             {pick(section.intro, language)}
           </p>
-          {renderInstrument(section.instrument.component, language)}
+          {renderInstrument(section.instrument.component, language, section.instrument.config)}
         </section>
       );
     case "synthesis":

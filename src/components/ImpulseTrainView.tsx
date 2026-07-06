@@ -7,7 +7,7 @@ const t = {
   factor: { pt: "Período D do trem de impulsos", en: "Impulse-train period D" },
 } satisfies Record<string, Localized>;
 
-// Slide 8 (Fig 9.4): downsampling seen as a multiplication by an impulse train.
+// Downsampling seen as a multiplication by an impulse train.
 // x(n) · p(n) = x̄(n) (zeros between kept samples) → compress → y(m) = x̄(mD).
 export default function ImpulseTrainView({
   language,
@@ -61,16 +61,16 @@ export default function ImpulseTrainView({
       </div>
 
       <p className="plot-label">{pick(labels.x, language)}</p>
-      <StemPlot samples={x} yMax={1} keep={factor} label={pick(labels.x, language)} />
+      <StemPlot language={language} samples={x} yMax={1} keep={factor} label={pick(labels.x, language)} />
 
       <p className="plot-label">{pick(labels.p, language)}</p>
-      <StemPlot samples={p} yMax={1} label={pick(labels.p, language)} />
+      <StemPlot language={language} samples={p} yMax={1} label={pick(labels.p, language)} />
 
       <p className="plot-label">{pick(labels.xbar, language)}</p>
-      <StemPlot samples={xbar} yMax={1} label={pick(labels.xbar, language)} />
+      <StemPlot language={language} samples={xbar} yMax={1} label={pick(labels.xbar, language)} />
 
       <p className="plot-label">{pick(labels.y, language)}</p>
-      <StemPlot samples={y} yMax={1} label={pick(labels.y, language)} />
+      <StemPlot language={language} samples={y} yMax={1} label={pick(labels.y, language)} />
     </div>
   );
 }

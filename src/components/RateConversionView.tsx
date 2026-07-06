@@ -7,8 +7,8 @@ const t = {
   factor: { pt: "Fator de interpolação I", en: "Interpolation factor I" },
 } satisfies Record<string, Localized>;
 
-// Fig 9.2 (interactive, more detailed than the book): rate conversion as linear
-// filtering. Input x(n) at Fx → insert I-1 zeros (↑I) → the filter fills the
+// Interactive rate conversion as linear filtering.
+//  Input x(n) at Fx → insert I-1 zeros (↑I) → the filter fills the
 // zeros → output y(m) at Fy = I·Fx. Same signal, denser.
 export default function RateConversionView({
   language,
@@ -60,13 +60,13 @@ export default function RateConversionView({
       </div>
 
       <p className="plot-label">{pick(inputLabel, language)}</p>
-      <StemPlot samples={x} yMax={1} label={pick(inputLabel, language)} />
+      <StemPlot language={language} samples={x} yMax={1} label={pick(inputLabel, language)} />
 
       <p className="plot-label">{pick(zerosLabel, language)}</p>
-      <StemPlot samples={zeros} yMax={1} label={pick(zerosLabel, language)} />
+      <StemPlot language={language} samples={zeros} yMax={1} label={pick(zerosLabel, language)} />
 
       <p className="plot-label">{pick(outputLabel, language)}</p>
-      <StemPlot samples={y} yMax={1} label={pick(outputLabel, language)} />
+      <StemPlot language={language} samples={y} yMax={1} label={pick(outputLabel, language)} />
     </div>
   );
 }

@@ -7,6 +7,12 @@ const t = {
   angle: { pt: "Ângulo de saída ω_y", en: "Output angle ω_y" },
   play: { pt: "▶ Animar", en: "▶ Play" },
   pause: { pt: "⏸ Pausar", en: "⏸ Pause" },
+  circle: { pt: "Círculo — os D pontos avaliados", en: "Circle — the D evaluated points" },
+  sampled: { pt: "|X(ω_x)| — amostrado nos D pontos", en: "|X(ω_x)| — sampled at the D points" },
+  copies: {
+    pt: "As D cópias de X (esticada por D, deslocada e com amplitude ÷ D) e sua soma Y — onde se sobrepõem, é o aliasing",
+    en: "The D copies of X (stretched by D, shifted, amplitude ÷ D) and their sum Y — where they overlap, that is aliasing",
+  },
 } satisfies Record<string, Localized>;
 
 const TAU = 2 * Math.PI;
@@ -153,7 +159,7 @@ export default function AliasCircleView({ language }: { language: Language }) {
 
       <div className="fig-row">
         <div className="fig-cell" style={{ flexBasis: "190px", flexGrow: 0 }}>
-          <p className="plot-label">Círculo — os D pontos avaliados</p>
+          <p className="plot-label">{pick(t.circle, language)}</p>
           <svg viewBox={`0 0 ${CW} ${CH}`} width="100%" style={{ display: "block" }}>
             <line x1={cx - r - 10} y1={cy} x2={cx + r + 10} y2={cy} stroke="var(--line)" />
             <line x1={cx} y1={cy - r - 10} x2={cx} y2={cy + r + 10} stroke="var(--line)" />
@@ -167,7 +173,7 @@ export default function AliasCircleView({ language }: { language: Language }) {
           </svg>
         </div>
         <div className="fig-cell">
-          <p className="plot-label">|X(ω_x)| — amostrado nos D pontos</p>
+          <p className="plot-label">{pick(t.sampled, language)}</p>
           <svg viewBox={`0 0 ${SW} ${SH}`} width="100%" style={{ display: "block" }}>
             <line x1={sp.left} y1={sp.top} x2={sp.left} y2={sBase} stroke="var(--line)" />
             <line x1={sp.left} y1={sBase} x2={sp.left + spw} y2={sBase} stroke="var(--line)" />
@@ -185,9 +191,7 @@ export default function AliasCircleView({ language }: { language: Language }) {
         </div>
       </div>
 
-      <p className="plot-label">
-        As D cópias de X (esticada por D, deslocada e com amplitude ÷ D) e sua soma Y — onde se sobrepõem, é o aliasing
-      </p>
+      <p className="plot-label">{pick(t.copies, language)}</p>
       <svg viewBox={`0 0 ${OW} ${OH}`} width="100%" style={{ display: "block" }}>
         <line x1={op.left} y1={op.top} x2={op.left} y2={oBase} stroke="var(--line)" />
         <line x1={op.left} y1={oBase} x2={op.left + opw} y2={oBase} stroke="var(--line)" />
