@@ -5,8 +5,8 @@ export const lab3: Lab = {
   labLabel: { pt: "Lab 3", en: "Lab 3" },
   title: { pt: "Rumo ao DSP: um filtro FIR", en: "Toward DSP: a FIR filter" },
   goal: {
-    pt: "Escrever um filtro FIR de média móvel em Verilog e verificá-lo por simulação (testbench + forma de onda), ligando o hardware à teoria de filtragem e amostragem do curso.",
-    en: "Write a moving-average FIR filter in Verilog and verify it in simulation (testbench + waveform), tying the hardware to the course's filtering and sampling theory.",
+    pt: "Construir um filtro FIR em Verilog e verificá-lo por simulação, encaixando a teoria do curso no hardware: a convolução, a resposta ao impulso e o filtro passa-baixas que aparece na decimação e na interpolação.",
+    en: "Build a FIR filter in Verilog and verify it in simulation, fitting the course theory into hardware: convolution, the impulse response, and the lowpass filter that shows up in decimation and interpolation.",
   },
   duration: { pt: "60–90 min", en: "60–90 min" },
   prereqs: [
@@ -15,8 +15,8 @@ export const lab3: Lab = {
       en: "Having done Lab 2 (clock, registers, non-blocking assignment).",
     },
     {
-      pt: "Ter visto, na teoria, a ideia de filtro FIR e de atraso z⁻¹.",
-      en: "Having seen, in theory, the idea of a FIR filter and the z⁻¹ delay.",
+      pt: "Ter visto, na teoria, a convolução v(n) = Σ h(k)·x(n−k) e a ideia de filtro passa-baixas (Aulas 3–6).",
+      en: "Having seen, in theory, the convolution v(n) = Σ h(k)·x(n−k) and the idea of a lowpass filter (Lectures 3–6).",
     },
   ],
   sections: [
@@ -25,17 +25,44 @@ export const lab3: Lab = {
       label: { pt: "Objetivo", en: "Goal" },
       title: { pt: "A teoria vira hardware", en: "The theory becomes hardware" },
       text: {
-        pt: "Até aqui acendemos LEDs e contamos. Agora damos o salto que dá nome ao curso: processar um sinal. Vamos construir o filtro FIR mais simples e intuitivo — a média móvel — em Verilog, e verificá-lo por simulação no Vivado, lendo a forma de onda. Você vai ver, na prática, que a linha de atrasos do hardware é literalmente a cadeia de z⁻¹ da teoria, e que tirar a média das últimas amostras suaviza o sinal: é um filtro passa-baixas.",
-        en: "So far we've lit LEDs and counted. Now we take the leap that gives the course its name: processing a signal. We'll build the simplest, most intuitive FIR filter — the moving average — in Verilog, and verify it in Vivado simulation by reading the waveform. You'll see, hands-on, that the hardware's delay line is literally the theory's chain of z⁻¹, and that averaging the last few samples smooths the signal: it's a low-pass filter.",
+        pt: "Até aqui acendemos LEDs e contamos. Agora damos o salto que dá nome ao curso: filtrar um sinal. Vamos construir um filtro FIR em Verilog e verificá-lo por simulação no Vivado, lendo a forma de onda. Você vai ver, na prática, que a convolução v(n) = Σ h(k)·x(n−k) da teoria vira uma linha de atrasos (cada z⁻¹ é um registrador) mais uma soma ponderada — exatamente o bloco que a Aula 3 coloca antes do ↓D (anti-aliasing) e a Aula 4 coloca depois do ↑I (anti-imaging).",
+        en: "So far we've lit LEDs and counted. Now we take the leap that gives the course its name: filtering a signal. We'll build a FIR filter in Verilog and verify it in Vivado simulation by reading the waveform. You'll see, hands-on, that the theory's convolution v(n) = Σ h(k)·x(n−k) becomes a delay line (each z⁻¹ is a register) plus a weighted sum — exactly the block Lecture 3 places before the ↓D (anti-aliasing) and Lecture 4 places after the ↑I (anti-imaging).",
       },
     },
     {
       kind: "prose",
       label: { pt: "Conceito", en: "Concept" },
-      title: { pt: "A média móvel é um FIR", en: "The moving average is a FIR" },
+      title: { pt: "O FIR é uma convolução", en: "A FIR is a convolution" },
       text: {
-        pt: "Um filtro FIR calcula a saída como uma soma ponderada das últimas amostras da entrada: y[n] = b₀·x[n] + b₁·x[n−1] + … + b_{M}·x[n−M]. A média móvel de 4 pontos é o caso em que todos os pesos são iguais a 1/4: y[n] = (x[n] + x[n−1] + x[n−2] + x[n−3]) / 4. Cada x[n−k] é a entrada atrasada de k amostras — o famoso z⁻ᵏ. Em hardware, 'atrasar uma amostra' é exatamente um registrador: guarda o valor de agora para entregá-lo no próximo clock.",
-        en: "A FIR filter computes the output as a weighted sum of the input's last samples: y[n] = b₀·x[n] + b₁·x[n−1] + … + b_{M}·x[n−M]. The 4-point moving average is the case where all weights equal 1/4: y[n] = (x[n] + x[n−1] + x[n−2] + x[n−3]) / 4. Each x[n−k] is the input delayed by k samples — the famous z⁻ᵏ. In hardware, 'delay by one sample' is exactly a register: it holds today's value to hand it over on the next clock.",
+        pt: "Um filtro FIR calcula a saída como a convolução da entrada com sua resposta ao impulso h(k): v(n) = Σₖ h(k)·x(n−k), com k de 0 a M−1 (IP-B eq. 9.21). Os h(k) são os M coeficientes do filtro (em inglês, 'taps') — é a lista de pesos que define o filtro. O FIR mais simples possível é a média móvel: todos os coeficientes iguais a 1/M, ou seja h(k) = 1/M. Com M = 4, y(n) = [x(n) + x(n−1) + x(n−2) + x(n−3)] / 4. É um passa-baixas rústico, mas o suficiente para ver a máquina funcionando. E o melhor: o hardware é o MESMO para qualquer FIR — muda só a lista de coeficientes.",
+        en: "A FIR filter computes the output as the convolution of the input with its impulse response h(k): v(n) = Σₖ h(k)·x(n−k), for k from 0 to M−1 (IP-B eq. 9.21). The h(k) are the filter's M coefficients (a.k.a. 'taps') — the list of weights that defines the filter. The simplest possible FIR is the moving average: every coefficient equal to 1/M, i.e. h(k) = 1/M. With M = 4, y(n) = [x(n) + x(n−1) + x(n−2) + x(n−3)] / 4. It's a crude lowpass, but enough to see the machine work. And best of all: the hardware is the SAME for any FIR — only the coefficient list changes.",
+      },
+    },
+    {
+      kind: "playground",
+      title: { pt: "A média móvel suaviza", en: "The moving average smooths" },
+      intro: {
+        pt: "A entrada é uma senoide de baixa frequência somada a uma de alta frequência. Mova M e veja a média de M amostras apagar a componente rápida (alta frequência) e preservar a lenta (baixa frequência). Isso é um passa-baixas — e é por isso que ele serve de anti-aliasing.",
+        en: "The input is a low-frequency sinusoid plus a high-frequency one. Slide M and watch the M-sample average kill the fast component (high frequency) and keep the slow one (low frequency). That's a lowpass — and it's why it works as an anti-aliasing filter.",
+      },
+      instrument: { component: "MovingAverageExplorer" },
+    },
+    {
+      kind: "prose",
+      label: { pt: "A ponte com a teoria", en: "The bridge to theory" },
+      title: { pt: "É o filtro da decimação e da interpolação", en: "It's the decimation and interpolation filter" },
+      text: {
+        pt: "Esse mesmo bloco é o filtro que aparece nas Aulas 3–5. Na decimação, ele vai ANTES do ↓D como anti-aliasing (corte π/D, ganho 1): 'filtrar antes de decimar' evita que as altas frequências dobrem sobre o sinal. Na interpolação, ele vai DEPOIS do ↑I como anti-imaging (corte π/I, ganho I): remove as cópias (imagens) que o upsampler cria. A média móvel é só o passa-baixas mais simples que existe; o curso projeta um h(k) melhor pelo método da janela (Aula 6). Mas o circuito — linha de atrasos + soma ponderada — não muda: para trocar de filtro, você só troca os coeficientes.",
+        en: "This very block is the filter that appears in Lectures 3–5. In decimation, it goes BEFORE the ↓D as anti-aliasing (cutoff π/D, gain 1): 'filter before decimating' keeps high frequencies from folding onto the signal. In interpolation, it goes AFTER the ↑I as anti-imaging (cutoff π/I, gain I): it removes the copies (images) the upsampler creates. The moving average is just the simplest lowpass there is; the course designs a better h(k) with the window method (Lecture 6). But the circuit — delay line + weighted sum — doesn't change: to swap filters, you only swap the coefficients.",
+      },
+    },
+    {
+      kind: "prose",
+      label: { pt: "Uma propriedade boa", en: "A nice property" },
+      title: { pt: "Fase linear: só atraso, sem distorção", en: "Linear phase: only delay, no distortion" },
+      text: {
+        pt: "Repare que os coeficientes da média móvel são todos iguais — logo, simétricos. Um FIR com coeficientes simétricos tem fase linear (Aula 6): ele atrasa TODAS as frequências pelo mesmo tempo, sem deformar a forma do sinal. Por isso, na simulação, a saída y(n) aparece como uma versão suavizada e ligeiramente atrasada da entrada — o atraso é constante, (M−1)/2 amostras. Essa é uma das grandes vantagens do FIR sobre outros filtros, e o motivo de ele ser preferido em decimação/interpolação.",
+        en: "Notice the moving-average coefficients are all equal — hence symmetric. A FIR with symmetric coefficients has linear phase (Lecture 6): it delays ALL frequencies by the same amount, without deforming the signal's shape. That's why, in simulation, the output y(n) appears as a smoothed, slightly delayed copy of the input — the delay is constant, (M−1)/2 samples. This is one of the FIR's big advantages over other filters, and the reason it's preferred in decimation/interpolation.",
       },
     },
     {
@@ -43,32 +70,34 @@ export const lab3: Lab = {
       label: { pt: "Ponto fixo", en: "Fixed point" },
       title: { pt: "Números inteiros, vírgula implícita", en: "Whole numbers, an implied point" },
       text: {
-        pt: "O FPGA não tem 'float' de graça: trabalhamos com inteiros com sinal (aritmética de ponto fixo). As amostras são inteiros de 16 bits com sinal (−32768 a 32767). A divisão por 4 vira um deslocamento aritmético à direita de 2 bits ('>>> 2'), que preserva o sinal. Isso é rápido e barato em hardware — e é assim que DSP roda em FPGA de verdade.",
-        en: "The FPGA doesn't give you 'float' for free: we work with signed integers (fixed-point arithmetic). Samples are 16-bit signed integers (−32768 to 32767). Dividing by 4 becomes an arithmetic right shift by 2 bits ('>>> 2'), which preserves the sign. This is fast and cheap in hardware — and it's how DSP really runs on an FPGA.",
+        pt: "O FPGA não tem 'float' de graça: trabalhamos com inteiros com sinal (aritmética de ponto fixo). As amostras são inteiros de 16 bits com sinal (−32768 a 32767). Como todos os coeficientes valem 1/4, a soma dividida por 4 vira um deslocamento aritmético à direita de 2 bits ('>>> 2'), que preserva o sinal. Isso é rápido e barato em hardware — e é assim que DSP roda em FPGA de verdade.",
+        en: "The FPGA doesn't give you 'float' for free: we work with signed integers (fixed-point arithmetic). Samples are 16-bit signed integers (−32768 to 32767). Since all coefficients equal 1/4, the sum divided by 4 becomes an arithmetic right shift by 2 bits ('>>> 2'), which preserves the sign. This is fast and cheap in hardware — and it's how DSP really runs on an FPGA.",
       },
     },
     {
       kind: "code",
-      title: { pt: "O filtro FIR de 4 taps", en: "The 4-tap FIR filter" },
+      title: { pt: "O filtro FIR de 4 coeficientes", en: "The 4-coefficient FIR filter" },
       intro: {
-        pt: "Uma linha de 4 registradores (a linha de atrasos) e uma soma dividida por 4. A cada clock entra uma amostra nova e sai a média das 4 últimas.",
-        en: "A line of 4 registers (the delay line) and a sum divided by 4. Each clock a new sample enters and the average of the last 4 comes out.",
+        pt: "Uma linha de 3 registradores (a linha de atrasos) mais a amostra atual, e a soma dividida por 4. A cada clock entra uma amostra nova e sai a média das 4 últimas.",
+        en: "A line of 3 registers (the delay line) plus the current sample, and the sum divided by 4. Each clock a new sample enters and the average of the last 4 comes out.",
       },
       block: {
         language: "verilog",
         filename: "fir4.v",
         code: {
-          pt: `// Media movel de 4 pontos: y[n] = (x[n]+x[n-1]+x[n-2]+x[n-3]) / 4
+          pt: `// FIR de 4 coeficientes iguais (media movel): h(k) = 1/4.
+// v(n) = (x(n) + x(n-1) + x(n-2) + x(n-3)) / 4
 module fir4 (
     input  wire               clk,
     input  wire               rst,
-    input  wire signed [15:0] x,   // amostra de entrada
+    input  wire signed [15:0] x,   // amostra de entrada x(n)
     output reg  signed [15:0] y    // amostra de saida (filtrada)
 );
-    // Linha de atrasos: d0 = x[n-1], d1 = x[n-2], d2 = x[n-3]
+    // Linha de atrasos: d0 = x(n-1), d1 = x(n-2), d2 = x(n-3)
     reg signed [15:0] d0, d1, d2;
 
     // Soma em 18 bits para nao estourar ao somar 4 amostras de 16 bits.
+    // Para um FIR qualquer: soma = h0*x + h1*d0 + h2*d1 + h3*d2.
     wire signed [17:0] soma = x + d0 + d1 + d2;
 
     always @(posedge clk) begin
@@ -78,21 +107,23 @@ module fir4 (
             d0 <= x;   // desloca a linha de atrasos (cada z^-1)
             d1 <= d0;
             d2 <= d1;
-            y  <= soma >>> 2;   // divide por 4 (shift aritmetico)
+            y  <= soma >>> 2;   // divide por 4 (coeficientes 1/4)
         end
     end
 endmodule`,
-          en: `// 4-point moving average: y[n] = (x[n]+x[n-1]+x[n-2]+x[n-3]) / 4
+          en: `// 4 equal-coefficient FIR (moving average): h(k) = 1/4.
+// v(n) = (x(n) + x(n-1) + x(n-2) + x(n-3)) / 4
 module fir4 (
     input  wire               clk,
     input  wire               rst,
-    input  wire signed [15:0] x,   // input sample
+    input  wire signed [15:0] x,   // input sample x(n)
     output reg  signed [15:0] y    // output sample (filtered)
 );
-    // Delay line: d0 = x[n-1], d1 = x[n-2], d2 = x[n-3]
+    // Delay line: d0 = x(n-1), d1 = x(n-2), d2 = x(n-3)
     reg signed [15:0] d0, d1, d2;
 
     // Sum in 18 bits so adding four 16-bit samples can't overflow.
+    // For a general FIR: sum = h0*x + h1*d0 + h2*d1 + h3*d2.
     wire signed [17:0] sum = x + d0 + d1 + d2;
 
     always @(posedge clk) begin
@@ -102,14 +133,14 @@ module fir4 (
             d0 <= x;   // shift the delay line (each z^-1)
             d1 <= d0;
             d2 <= d1;
-            y  <= sum >>> 2;   // divide by 4 (arithmetic shift)
+            y  <= sum >>> 2;   // divide by 4 (coefficients 1/4)
         end
     end
 endmodule`,
         },
         caption: {
-          pt: "d0, d1, d2 são os três z⁻¹. A soma usa 18 bits para caber 4×16 bits sem overflow.",
-          en: "d0, d1, d2 are the three z⁻¹. The sum uses 18 bits to fit 4×16 bits without overflow.",
+          pt: "d0, d1, d2 são os três z⁻¹. Trocar a soma simples por h0*x + h1*d0 + … faz deste um FIR qualquer.",
+          en: "d0, d1, d2 are the three z⁻¹. Replacing the plain sum with h0*x + h1*d0 + … turns this into any FIR.",
         },
       },
     },
@@ -118,8 +149,8 @@ endmodule`,
       label: { pt: "A ponte com a teoria", en: "The bridge to theory" },
       title: { pt: "A linha de atrasos é a cadeia de z⁻¹", en: "The delay line is the chain of z⁻¹" },
       text: {
-        pt: "Olhe para d0, d1, d2: a cada clock, o valor 'anda' um passo pela fila (d0←x, d1←d0, d2←d1). Isso é exatamente o diagrama de blocos do FIR que você viu na teoria, com cada bloco z⁻¹ virando um registrador. Como os pesos são todos iguais e positivos, o filtro atenua as variações rápidas (alta frequência) e deixa passar as lentas (baixa frequência): é um passa-baixas. Trocando os pesos (os coeficientes b_k), o mesmo hardware vira qualquer FIR — inclusive os filtros de decimação e interpolação do curso.",
-        en: "Look at d0, d1, d2: each clock, the value 'walks' one step down the line (d0←x, d1←d0, d2←d1). This is exactly the FIR block diagram you saw in theory, with each z⁻¹ block becoming a register. Because the weights are all equal and positive, the filter attenuates fast variations (high frequency) and lets slow ones through (low frequency): it's a low-pass. Swap the weights (the b_k coefficients) and the same hardware becomes any FIR — including the course's decimation and interpolation filters.",
+        pt: "Olhe para d0, d1, d2: a cada clock, o valor 'anda' um passo pela fila (d0←x, d1←d0, d2←d1). Isso é exatamente o diagrama de blocos do FIR da teoria, com cada bloco z⁻¹ virando um registrador. A amostra atual x e os três atrasos d0, d1, d2 são as quatro entradas da soma — os quatro termos x(n−k) da convolução. É o hardware da equação, linha por linha.",
+        en: "Look at d0, d1, d2: each clock, the value 'walks' one step down the line (d0←x, d1←d0, d2←d1). This is exactly the theory's FIR block diagram, with each z⁻¹ block becoming a register. The current sample x and the three delays d0, d1, d2 are the four inputs to the sum — the four x(n−k) terms of the convolution. It's the hardware of the equation, line by line.",
       },
     },
     {
@@ -189,8 +220,8 @@ module fir4_tb;
 endmodule`,
         },
         caption: {
-          pt: "O impulso mostra os coeficientes do filtro; o degrau mostra a rampa de subida da média.",
-          en: "The impulse reveals the filter's coefficients; the step shows the moving average ramping up.",
+          pt: "O impulso revela a resposta ao impulso h(k); o degrau mostra a rampa de subida da média.",
+          en: "The impulse reveals the impulse response h(k); the step shows the moving average ramping up.",
         },
       },
     },
@@ -243,8 +274,8 @@ endmodule`,
       variant: "note",
       title: { pt: "O que você deve enxergar", en: "What you should see" },
       text: {
-        pt: "Na resposta ao impulso (x = 100 por uma amostra), a saída y produz quatro amostras iguais a 25 (= 100/4) e depois volta a 0 — são os quatro coeficientes 1/4 do filtro, aparecendo um a um. No degrau (x = 200), y sobe em rampa: 50, 100, 150, 200 — a média demora 4 amostras para 'encher' e alcançar a entrada. Isso é o passa-baixas suavizando a mudança brusca.",
-        en: "In the impulse response (x = 100 for one sample), the output y produces four samples equal to 25 (= 100/4) and then returns to 0 — the filter's four 1/4 coefficients, appearing one by one. On the step (x = 200), y ramps up: 50, 100, 150, 200 — the average takes 4 samples to 'fill up' and reach the input. That's the low-pass smoothing the abrupt change.",
+        pt: "Na resposta ao impulso (x = 100 por uma amostra), a saída y produz quatro amostras iguais a 25 (= 100/4) e depois volta a 0 — são os quatro coeficientes 1/4 do filtro, saindo um a um. É literalmente h(k) aparecendo na tela. No degrau (x = 200), y sobe em rampa: 50, 100, 150, 200 — a média demora 4 amostras para 'encher' e alcançar a entrada. Isso é o passa-baixas suavizando a mudança brusca.",
+        en: "In the impulse response (x = 100 for one sample), the output y produces four samples equal to 25 (= 100/4) and then returns to 0 — the filter's four 1/4 coefficients, coming out one by one. It's literally h(k) appearing on screen. On the step (x = 200), y ramps up: 50, 100, 150, 200 — the average takes 4 samples to 'fill up' and reach the input. That's the lowpass smoothing the abrupt change.",
       },
     },
     {
@@ -252,20 +283,20 @@ endmodule`,
       title: { pt: "Você concluiu a trilha de fundamentos", en: "You finished the fundamentals track" },
       items: [
         {
-          pt: "Simulei o FIR e vi a resposta ao impulso com quatro amostras iguais a 25.",
-          en: "I simulated the FIR and saw the impulse response with four samples equal to 25.",
+          pt: "Simulei o FIR e vi a resposta ao impulso h(k): quatro amostras iguais a 25.",
+          en: "I simulated the FIR and saw the impulse response h(k): four samples equal to 25.",
         },
         {
           pt: "Vi a saída subir em rampa (50→100→150→200) no degrau — o efeito passa-baixas.",
           en: "I saw the output ramp up (50→100→150→200) on the step — the low-pass effect.",
         },
         {
-          pt: "Identifiquei d0, d1, d2 como os atrasos z⁻¹ da teoria.",
-          en: "I identified d0, d1, d2 as the theory's z⁻¹ delays.",
+          pt: "Identifiquei a linha de atrasos (d0, d1, d2) como os z⁻¹ da convolução.",
+          en: "I identified the delay line (d0, d1, d2) as the convolution's z⁻¹ terms.",
         },
         {
-          pt: "Entendo por que a divisão por 4 vira um '>>> 2' (ponto fixo com sinal).",
-          en: "I understand why dividing by 4 becomes a '>>> 2' (signed fixed-point).",
+          pt: "Entendo que este é o filtro anti-aliasing (antes do ↓D) / anti-imaging (depois do ↑I) das aulas.",
+          en: "I understand this is the anti-aliasing filter (before ↓D) / anti-imaging (after ↑I) from the lectures.",
         },
       ],
     },
@@ -275,45 +306,72 @@ endmodule`,
       quizzes: [
         {
           question: {
-            pt: "Por que a resposta ao impulso do filtro tem exatamente 4 amostras não-nulas?",
-            en: "Why does the filter's impulse response have exactly 4 non-zero samples?",
+            pt: "Por que a resposta ao impulso deste filtro tem exatamente 4 amostras não-nulas?",
+            en: "Why does this filter's impulse response have exactly 4 non-zero samples?",
           },
           options: [
-            {
-              pt: "Porque é um FIR de 4 taps: o impulso passa por 4 posições da linha de atrasos",
-              en: "Because it's a 4-tap FIR: the impulse passes through 4 positions of the delay line",
-            },
             { pt: "Por acaso", en: "By coincidence" },
+            {
+              pt: "Porque é um FIR de 4 coeficientes: o impulso passa por 4 posições da linha de atrasos",
+              en: "Because it's a 4-coefficient FIR: the impulse passes through 4 positions of the delay line",
+            },
             { pt: "Porque o clock é de 100 MHz", en: "Because the clock is 100 MHz" },
             { pt: "Porque a entrada era 100", en: "Because the input was 100" },
           ],
-          correctIndex: 0,
+          correctIndex: 1,
           solution: [
             {
               text: {
-                pt: "Um FIR de M+1 taps tem resposta ao impulso de M+1 amostras (é 'finita' — o F de FIR). Aqui são 4 taps, então 4 amostras: o impulso visita x, d0, d1, d2 e some. Cada uma vale 100/4 = 25.",
-                en: "An (M+1)-tap FIR has an impulse response of M+1 samples (it's 'finite' — the F in FIR). Here there are 4 taps, so 4 samples: the impulse visits x, d0, d1, d2 and is gone. Each equals 100/4 = 25.",
+                pt: "Um FIR de M coeficientes tem resposta ao impulso de M amostras (é 'finita' — o F de FIR). Aqui são 4 coeficientes, então 4 amostras: o impulso visita x, d0, d1, d2 e some. Cada uma vale 100/4 = 25.",
+                en: "An M-coefficient FIR has an impulse response of M samples (it's 'finite' — the F in FIR). Here there are 4 coefficients, so 4 samples: the impulse visits x, d0, d1, d2 and is gone. Each equals 100/4 = 25.",
               },
             },
           ],
         },
         {
           question: {
-            pt: "Tirar a média das últimas amostras corresponde a que tipo de filtro?",
-            en: "Averaging the last few samples corresponds to what kind of filter?",
+            pt: "Na decimação (Aula 3), onde entra um filtro passa-baixas como este?",
+            en: "In decimation (Lecture 3), where does a lowpass filter like this go?",
           },
           options: [
-            { pt: "Passa-altas", en: "High-pass" },
-            { pt: "Passa-baixas", en: "Low-pass" },
-            { pt: "Passa-faixa", en: "Band-pass" },
-            { pt: "Nenhum filtro", en: "No filter at all" },
+            { pt: "Depois do ↓D, para consertar o aliasing", en: "After the ↓D, to fix aliasing" },
+            { pt: "Não é usado na decimação", en: "It isn't used in decimation" },
+            {
+              pt: "Antes do ↓D, como anti-aliasing: filtrar antes de decimar",
+              en: "Before the ↓D, as anti-aliasing: filter before decimating",
+            },
+            { pt: "Em paralelo com o ↓D", en: "In parallel with the ↓D" },
           ],
-          correctIndex: 1,
+          correctIndex: 2,
           solution: [
             {
               text: {
-                pt: "A média suaviza: variações rápidas (alta frequência) se cancelam ao serem promediadas, enquanto tendências lentas (baixa frequência) passam quase intactas. Por isso a média móvel é um passa-baixas.",
-                en: "Averaging smooths: fast variations (high frequency) cancel out when averaged, while slow trends (low frequency) pass almost intact. That's why the moving average is a low-pass.",
+                pt: "O filtro anti-aliasing vem ANTES do ↓D (corte π/D). Ele remove as altas frequências que, depois da decimação, dobrariam sobre o sinal (aliasing). Depois de decimar já seria tarde. Este FIR é justamente esse bloco.",
+                en: "The anti-aliasing filter goes BEFORE the ↓D (cutoff π/D). It removes the high frequencies that, after decimation, would fold onto the signal (aliasing). After decimating it would be too late. This FIR is exactly that block.",
+              },
+            },
+          ],
+        },
+        {
+          question: {
+            pt: "Para transformar este circuito em um FIR passa-baixas melhor, o que você muda?",
+            en: "To turn this circuit into a better lowpass FIR, what do you change?",
+          },
+          options: [
+            {
+              pt: "Os coeficientes h(k) da soma ponderada — a estrutura (linha de atrasos) fica igual",
+              en: "The h(k) coefficients of the weighted sum — the structure (delay line) stays the same",
+            },
+            { pt: "O clock", en: "The clock" },
+            { pt: "A largura das amostras para 8 bits", en: "The sample width to 8 bits" },
+            { pt: "Nada — a média móvel é o melhor FIR", en: "Nothing — the moving average is the best FIR" },
+          ],
+          correctIndex: 0,
+          solution: [
+            {
+              text: {
+                pt: "O hardware do FIR é sempre linha de atrasos + soma ponderada. O que define o filtro são os coeficientes h(k). O curso projeta bons h(k) pelo método da janela (Aula 6); aqui usamos os mais simples (todos 1/M). Trocar os pesos, mesma máquina.",
+                en: "A FIR's hardware is always delay line + weighted sum. What defines the filter is the h(k) coefficients. The course designs good h(k) with the window method (Lecture 6); here we use the simplest (all 1/M). Swap the weights, same machine.",
               },
             },
           ],

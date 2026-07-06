@@ -1307,6 +1307,65 @@ body {
   color: var(--ink-soft);
 }
 
+/* Moving-average explorer. */
+.mavg-plot {
+  width: 100%;
+  height: auto;
+  display: block;
+  margin-top: 0.5rem;
+  background: #0a121b;
+  border: 1px solid var(--line);
+  border-radius: 10px;
+}
+.mavg-legend {
+  display: flex;
+  gap: 1.25rem;
+  margin-top: 0.5rem;
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+}
+.mavg-key {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  color: var(--ink-soft);
+}
+.mavg-key::before {
+  content: "";
+  width: 16px;
+  height: 3px;
+  border-radius: 2px;
+}
+.mavg-key--in::before {
+  background: var(--ink-soft);
+  opacity: 0.6;
+}
+.mavg-key--out::before {
+  background: var(--signal);
+}
+.mavg-ir {
+  display: flex;
+  align-items: flex-end;
+  gap: 0.7rem;
+  margin-top: 0.85rem;
+}
+.mavg-ir-bars {
+  display: flex;
+  align-items: flex-end;
+  gap: 3px;
+  height: 44px;
+}
+.mavg-bar {
+  width: 10px;
+  background: var(--brand-trace);
+  border-radius: 2px 2px 0 0;
+}
+.mavg-ir-label {
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  color: var(--ink-soft);
+}
+
 /* Development-flow instrument. */
 .devflow-track {
   display: flex;

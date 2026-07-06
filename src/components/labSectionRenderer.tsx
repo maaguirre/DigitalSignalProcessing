@@ -18,6 +18,7 @@ import ClockDividerCalc from "./ClockDividerCalc.tsx";
 import CpuVsFpga from "./CpuVsFpga.tsx";
 import DevFlow from "./DevFlow.tsx";
 import SwitchLedSim from "./SwitchLedSim.tsx";
+import MovingAverageExplorer from "./MovingAverageExplorer.tsx";
 
 function renderInstrument(name: LabInstrumentName, language: Language) {
   switch (name) {
@@ -31,6 +32,8 @@ function renderInstrument(name: LabInstrumentName, language: Language) {
       return <DevFlow language={language} />;
     case "SwitchLedSim":
       return <SwitchLedSim language={language} />;
+    case "MovingAverageExplorer":
+      return <MovingAverageExplorer language={language} />;
     default:
       return null;
   }

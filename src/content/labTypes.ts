@@ -26,7 +26,8 @@ export type LabInstrumentName =
   | "ClockDividerCalc"
   | "CpuVsFpga"
   | "DevFlow"
-  | "SwitchLedSim";
+  | "SwitchLedSim"
+  | "MovingAverageExplorer";
 
 export type LabFigure = {
   src: string;

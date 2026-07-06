@@ -42,8 +42,8 @@ export const lab2: Lab = {
       label: { pt: "Motivação", en: "Motivation" },
       title: { pt: "100 MHz é rápido demais para o olho", en: "100 MHz is too fast for the eye" },
       text: {
-        pt: "Se ligássemos um LED direto ao clock, ele piscaria 100 milhões de vezes por segundo — seu olho veria apenas um LED meio aceso. Precisamos DIVIDIR o clock até uma taxa visível. O truque é um contador: o bit N de um contador alimentado a 100 MHz é uma onda quadrada em f = 100 MHz / 2ᴺ. Escolhendo N grande o suficiente, chegamos a poucos hertz. (Repare: dividir um clock é, no fundo, reduzir a taxa de um sinal — a mesma ideia de decimação que você viu na teoria, só que aplicada ao pulso do relógio.)",
-        en: "If we wired an LED straight to the clock, it would blink 100 million times per second — your eye would see just a dimly-lit LED. We need to DIVIDE the clock down to a visible rate. The trick is a counter: bit N of a counter clocked at 100 MHz is a square wave at f = 100 MHz / 2ᴺ. Pick N large enough and you reach a few hertz. (Notice: dividing a clock is, at heart, lowering a signal's rate — the same decimation idea you saw in the theory, applied to the clock tick.)",
+        pt: "Se ligássemos um LED direto ao clock, ele piscaria 100 milhões de vezes por segundo — seu olho veria apenas um LED meio aceso. Precisamos DIVIDIR o clock até uma taxa visível. O truque é um contador: o bit N de um contador alimentado a 100 MHz é uma onda quadrada em f = 100 MHz / 2ᴺ. Escolhendo N grande o suficiente, chegamos a poucos hertz. (Repare: dividir o clock por 2ᴺ é reduzir a taxa do pulso do relógio — a mesma ideia do downsampler ↓D da Aula 2, só que aplicada ao relógio em vez de a um sinal.)",
+        en: "If we wired an LED straight to the clock, it would blink 100 million times per second — your eye would see just a dimly-lit LED. We need to DIVIDE the clock down to a visible rate. The trick is a counter: bit N of a counter clocked at 100 MHz is a square wave at f = 100 MHz / 2ᴺ. Pick N large enough and you reach a few hertz. (Notice: dividing the clock by 2ᴺ lowers the rate of the clock tick — the same idea as Lecture 2's ↓D downsampler, applied to the clock rather than to a signal.)",
       },
     },
     {
@@ -397,8 +397,8 @@ endmodule`,
       label: { pt: "O que vem a seguir", en: "What comes next" },
       title: { pt: "Do contador ao processamento de sinais", en: "From a counter to signal processing" },
       text: {
-        pt: "Você já tem os três blocos fundamentais: entradas/saídas (Lab 1), clock e registradores (Lab 2). Um registrador que guarda a amostra anterior de um sinal é exatamente o atraso z⁻¹ que aparece na teoria. Encadeando alguns desses atrasos e somando, temos um filtro FIR — o coração do processamento digital de sinais. É isso que construímos no Lab 3, e vamos verificá-lo por simulação antes de pensar em áudio real.",
-        en: "You now have the three fundamental pieces: inputs/outputs (Lab 1), clock and registers (Lab 2). A register that stores the previous sample of a signal is exactly the z⁻¹ delay that appears in the theory. Chain a few of those delays and add them up, and you get a FIR filter — the heart of digital signal processing. That's what we build in Lab 3, and we'll verify it in simulation before thinking about real audio.",
+        pt: "Você já tem os três blocos fundamentais: entradas/saídas (Lab 1), clock e registradores (Lab 2). Um registrador que guarda a amostra anterior de um sinal é exatamente o atraso z⁻¹ da teoria. Encadeando alguns desses atrasos e somando com pesos, você tem a convolução v(n) = Σ h(k)·x(n−k) — ou seja, um filtro FIR, o coração do processamento digital de sinais. É isso que construímos no Lab 3, e vamos verificá-lo por simulação antes de pensar em áudio real.",
+        en: "You now have the three fundamental pieces: inputs/outputs (Lab 1), clock and registers (Lab 2). A register that stores the previous sample of a signal is exactly the theory's z⁻¹ delay. Chain a few of those delays and add them up with weights, and you have the convolution v(n) = Σ h(k)·x(n−k) — that is, a FIR filter, the heart of digital signal processing. That's what we build in Lab 3, and we'll verify it in simulation before thinking about real audio.",
       },
     },
   ],
