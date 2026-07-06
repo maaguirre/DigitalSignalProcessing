@@ -33,6 +33,10 @@ body {
   background-image: radial-gradient(var(--grid) 1.4px, transparent 1.4px);
   background-size: 22px 22px;
   color: var(--ink);
+  /* Safety net: never let a stray wide child (e.g. an inline formula) push the
+     page sideways and expose an unpainted strip. `clip` avoids creating a
+     scroll container, so sticky elements keep working. */
+  overflow-x: clip;
 }
 
 /* ── Header ─────────────────────────────────────────────────────────────── */
@@ -218,6 +222,7 @@ body {
 }
 .lecture-section {
   scroll-margin-top: 1.5rem;
+  min-width: 0; /* let the flex item shrink so wide children can scroll/scale */
 }
 
 /* Presentation mode: one section at a time + a control bar. */
@@ -368,16 +373,20 @@ body {
 @media (max-width: 720px) {
   .shell {
     flex-direction: column;
+    /* stretch children to full width — without this the column's flex-start
+       lets .content size to its content and overflow the viewport. */
+    align-items: stretch;
+    padding: 1.25rem 1rem 3rem;
   }
+  .content {
+    max-width: 100%;
+  }
+  /* Full-width vertical menu stacked above the content (a clean column, not a
+     wrapping row — the collapsible Lectures group expands tidily). */
   .sidebar {
     position: static;
     flex-basis: auto;
-    flex-direction: row;
-    flex-wrap: wrap;
-    gap: 0.25rem;
-  }
-  .nav-group {
-    flex-basis: 100%;
+    width: 100%;
   }
 }
 
@@ -472,10 +481,12 @@ body {
   padding-left: 1rem;
   scroll-margin-top: 1.5rem;
   scroll-margin-bottom: 90px; /* clear the sticky presentation control bar */
+  min-width: 0; /* allow shrink so a wide formula scrolls instead of overflowing */
 }
 .formula--block {
   display: block;
   margin: 0.25rem 0;
+  max-width: 100%; /* stay within the column; long formulas scroll horizontally */
   overflow-x: auto;
 }
 .step-caption {
