@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Sidebar from "./components/Sidebar.tsx";
 import Home from "./components/Home.tsx";
 import LectureList from "./components/LectureList.tsx";
@@ -51,6 +51,14 @@ export default function App() {
   const [language, setLanguage] = useState<Language>("pt");
   const route = useRoute();
 
+  const routeKey =
+    route.name +
+    ("id" in route ? `:${route.id}` : "") +
+    ("slug" in route ? `:${route.slug}` : "");
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, [routeKey]);
+
   const activeLecture =
     route.name === "lecture" ? lectures[route.id] : undefined;
   const activeLab = route.name === "lab" ? labs[route.id] : undefined;
@@ -70,7 +78,13 @@ export default function App() {
           note={pick(ui.soonNote, language)}
         />
       ) : mode === "presentation" ? (
-        <PresentationView lecture={activeLecture} language={language} />
+        // key by lecture id so switching lectures remounts and resets to the
+        // first slide (internal index/revealed start fresh).
+        <PresentationView
+          key={activeLecture.id}
+          lecture={activeLecture}
+          language={language}
+        />
       ) : (
         <LectureView lecture={activeLecture} language={language} />
       );
