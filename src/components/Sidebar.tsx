@@ -3,6 +3,7 @@ import { type Language, type Localized, pick } from "../i18n.ts";
 import type { Route } from "../router.ts";
 import { lectureCatalog } from "../content/lectures.ts";
 import { reviewCatalog } from "../content/review.ts";
+import { labCatalog } from "../content/labs.ts";
 
 type Mode = "study" | "presentation";
 
@@ -65,26 +66,35 @@ export default function Sidebar({
   mode: Mode;
   setMode: (mode: Mode) => void;
 }) {
+  // Labs are hands-on guides with no presentation view.
+  const showModeToggle = route.name !== "labs" && route.name !== "lab";
+
   return (
     <nav className="sidebar" aria-label={pick(labels.nav, language)}>
-      <div
-        className="toggle sidebar-mode"
-        role="group"
-        aria-label={pick(labels.usageMode, language)}
-      >
-        <button
-          className={mode === "study" ? "toggle-btn active" : "toggle-btn"}
-          onClick={() => setMode("study")}
+      {showModeToggle ? (
+        <div
+          className="toggle sidebar-mode"
+          role="group"
+          aria-label={pick(labels.usageMode, language)}
         >
-          {pick(labels.study, language)}
-        </button>
-        <button
-          className={mode === "presentation" ? "toggle-btn active" : "toggle-btn"}
-          onClick={() => setMode("presentation")}
-        >
-          {pick(labels.presentation, language)}
-        </button>
-      </div>
+          <button
+            className={mode === "study" ? "toggle-btn active" : "toggle-btn"}
+            onClick={() => setMode("study")}
+          >
+            {pick(labels.study, language)}
+          </button>
+          <button
+            className={mode === "presentation" ? "toggle-btn active" : "toggle-btn"}
+            onClick={() => setMode("presentation")}
+          >
+            {pick(labels.presentation, language)}
+          </button>
+        </div>
+      ) : (
+        <div className="toggle sidebar-mode sidebar-mode--static" aria-hidden="true">
+          <span className="toggle-btn active">{pick(labels.study, language)}</span>
+        </div>
+      )}
 
       <a href="#/" className={itemClass(route.name === "home")}>
         {pick(labels.home, language)}
@@ -141,9 +151,30 @@ export default function Sidebar({
         })}
       </NavSection>
 
-      <a href="#/lab" className={itemClass(route.name === "lab")}>
-        {pick(labels.lab, language)}
-      </a>
+      <NavSection
+        title={pick(labels.lab, language)}
+        href="#/lab"
+        active={route.name === "labs"}
+        expanded={route.name === "labs" || route.name === "lab"}
+      >
+        {labCatalog.map((entry) => {
+          const active = route.name === "lab" && route.id === entry.id;
+          const label = `Lab ${entry.id} · ${pick(entry.title, language)}`;
+          return entry.available ? (
+            <a
+              key={entry.id}
+              href={`#/lab/${entry.id}`}
+              className={itemClass(active)}
+            >
+              {label}
+            </a>
+          ) : (
+            <span key={entry.id} className="nav-item nav-item--disabled">
+              {label} <em className="nav-soon">{pick(labels.soon, language)}</em>
+            </span>
+          );
+        })}
+      </NavSection>
     </nav>
   );
 }
