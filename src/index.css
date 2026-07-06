@@ -178,6 +178,9 @@ body {
   flex: 1;
   text-align: center;
 }
+.sidebar-mode--static .toggle-btn {
+  cursor: default;
+}
 
 /* Collapsible nav group (Lectures) — the toggle looks like a normal nav item. */
 .nav-group-wrap {
@@ -617,4 +620,749 @@ body {
   * {
     transition: none !important;
   }
+}
+
+/* ── Lab track ──────────────────────────────────────────────────────────── */
+/* Lab header: goal, duration, prerequisites. */
+.lab-meta {
+  display: flex;
+  gap: 1.25rem;
+  flex-wrap: wrap;
+  margin-top: 1rem;
+  font-family: var(--font-mono);
+  font-size: 0.8rem;
+  color: var(--ink-soft);
+}
+.lab-meta-item strong {
+  color: var(--ink);
+  font-weight: 500;
+}
+.lab-prereqs {
+  margin-top: 1.25rem;
+  border-left: 2px solid var(--signal);
+  padding-left: 0.85rem;
+}
+.lab-prereqs-label {
+  display: block;
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--signal);
+  margin-bottom: 0.35rem;
+}
+.lab-prereqs ul {
+  margin: 0;
+  padding-left: 1.1rem;
+  color: var(--ink-soft);
+  font-size: 0.9rem;
+  line-height: 1.6;
+}
+
+/* Code block (Verilog / XDC / Tcl). */
+.code-block {
+  margin: 1.25rem 0 0;
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  overflow: hidden;
+  background: #0a121b;
+}
+.code-head {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  padding: 0.45rem 0.75rem;
+  background: var(--panel);
+  border-bottom: 1px solid var(--line);
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+}
+.code-lang {
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--signal);
+  font-weight: 600;
+}
+.code-file {
+  color: var(--ink-soft);
+}
+.code-copy {
+  margin-left: auto;
+  background: transparent;
+  border: 1px solid var(--line);
+  color: var(--ink-soft);
+  border-radius: 6px;
+  padding: 0.2rem 0.55rem;
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
+  cursor: pointer;
+}
+.code-copy:hover {
+  color: var(--signal);
+  border-color: var(--signal);
+}
+.code-body {
+  margin: 0;
+  padding: 0.9rem 1rem;
+  overflow-x: auto;
+  font-family: var(--font-mono);
+  font-size: 0.82rem;
+  line-height: 1.55;
+  color: var(--ink);
+  white-space: pre;
+  tab-size: 4;
+}
+.code-caption {
+  padding: 0.55rem 1rem;
+  border-top: 1px solid var(--line);
+  font-size: 0.8rem;
+  color: var(--ink-soft);
+  background: var(--panel);
+}
+
+/* Numbered procedure. */
+.lab-steps {
+  list-style: none;
+  margin: 1.25rem 0 0;
+  padding: 0;
+  counter-reset: none;
+}
+.lab-step {
+  display: grid;
+  grid-template-columns: 2rem 1fr;
+  gap: 0.9rem;
+  padding: 0.9rem 0;
+  border-top: 1px solid var(--line);
+}
+.lab-step:first-child {
+  border-top: none;
+}
+.lab-step-num {
+  width: 2rem;
+  height: 2rem;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  background: var(--signal);
+  color: #04171a;
+  font-family: var(--font-mono);
+  font-weight: 700;
+  font-size: 0.9rem;
+}
+.lab-step-title {
+  font-family: var(--font-display);
+  font-size: 1rem;
+  margin: 0.15rem 0 0.35rem;
+  color: var(--ink);
+}
+.lab-step-text {
+  color: var(--ink-soft);
+  line-height: 1.65;
+  margin: 0;
+}
+
+/* Callouts. */
+.callout {
+  display: flex;
+  gap: 0.7rem;
+  margin: 1.1rem 0 0;
+  padding: 0.8rem 0.95rem;
+  border-radius: 10px;
+  border: 1px solid var(--line);
+  border-left-width: 3px;
+  background: var(--panel);
+}
+.callout--tip { border-left-color: var(--signal); }
+.callout--warning { border-left-color: var(--alias); }
+.callout--note { border-left-color: var(--ink-soft); }
+.callout--check { border-left-color: var(--ok); }
+.callout-icon {
+  font-size: 1rem;
+  line-height: 1.4;
+}
+.callout-title {
+  display: block;
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--ink);
+  margin-bottom: 0.2rem;
+}
+.callout-text {
+  margin: 0;
+  color: var(--ink-soft);
+  font-size: 0.9rem;
+  line-height: 1.6;
+}
+.callout-text a,
+.lab-step-text a {
+  color: var(--signal);
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+.callout-text a:hover,
+.lab-step-text a:hover {
+  color: var(--ink);
+}
+
+/* Checklist. */
+.lab-checklist {
+  list-style: none;
+  margin: 1.1rem 0 0;
+  padding: 0;
+}
+.lab-check {
+  margin: 0.35rem 0;
+}
+.lab-check label {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.6rem;
+  cursor: pointer;
+  color: var(--ink-soft);
+  line-height: 1.55;
+}
+.lab-check input {
+  margin-top: 0.25rem;
+  accent-color: var(--ok);
+  width: 1rem;
+  height: 1rem;
+  flex-shrink: 0;
+}
+.lab-check--done span {
+  color: var(--ok);
+  text-decoration: line-through;
+  text-decoration-color: var(--line);
+}
+
+/* Board pin-map diagram. */
+.board-diagram {
+  margin-top: 0.5rem;
+}
+.board-svg {
+  width: 100%;
+  height: auto;
+  display: block;
+}
+.board-part {
+  cursor: pointer;
+}
+.board-part:hover {
+  filter: brightness(1.25);
+}
+.board-brand {
+  fill: #e6f2ea;
+  font-family: var(--font-display);
+  font-size: 17px;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+}
+.board-silk {
+  fill: #cfe6d8;
+  font-family: var(--font-mono);
+  font-size: 10px;
+  text-anchor: middle;
+}
+.board-chip {
+  fill: #aeb7bf;
+  font-family: var(--font-mono);
+  font-size: 12px;
+  font-weight: 600;
+  text-anchor: middle;
+  letter-spacing: 0.08em;
+}
+.board-chip-sub {
+  fill: #6f7b84;
+  font-family: var(--font-mono);
+  font-size: 10px;
+  text-anchor: middle;
+}
+.board-group-label {
+  fill: #cfe6d8;
+  font-family: var(--font-mono);
+  font-size: 12px;
+}
+.board-part-cap {
+  fill: var(--ink);
+  font-family: var(--font-mono);
+  font-size: 11px;
+  text-anchor: middle;
+}
+.board-tick {
+  fill: var(--ink-soft);
+  font-family: var(--font-mono);
+  font-size: 11px;
+  text-anchor: middle;
+}
+.board-btn-letter {
+  fill: #e6f2ea;
+  font-family: var(--font-mono);
+  font-size: 11px;
+  font-weight: 700;
+  text-anchor: middle;
+}
+.board-readout {
+  margin-top: 0.75rem;
+  padding: 0.7rem 0.95rem;
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  background: var(--panel);
+}
+.board-readout-main {
+  display: flex;
+  align-items: baseline;
+  gap: 0.6rem;
+  flex-wrap: wrap;
+}
+.board-readout-sig {
+  font-family: var(--font-display);
+  font-size: 1.1rem;
+  color: var(--ink);
+}
+.board-readout-pin {
+  font-family: var(--font-mono);
+  font-size: 0.95rem;
+  color: var(--signal);
+  background: var(--paper);
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  padding: 0.1rem 0.5rem;
+}
+.board-readout-bank {
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  color: var(--brand-trace);
+}
+.board-readout-kind {
+  font-family: var(--font-mono);
+  font-size: 0.78rem;
+  color: var(--ink);
+  margin-top: 0.4rem;
+}
+.board-readout-detail {
+  font-size: 0.85rem;
+  color: var(--ink-soft);
+  line-height: 1.55;
+  margin-top: 0.25rem;
+}
+.board-readout-hint {
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  color: var(--ink-soft);
+  opacity: 0.7;
+  margin-top: 0.5rem;
+}
+
+/* Clock-divider calculator. */
+.clockcalc-eq {
+  font-family: var(--font-mono);
+  font-size: 0.95rem;
+  color: var(--ink-soft);
+  margin: 0 0 1rem;
+}
+.clockcalc-eq strong {
+  color: var(--signal);
+}
+.clockcalc-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+  margin: 0.5rem 0 1rem;
+}
+.clockcalc-big {
+  display: block;
+  font-family: var(--font-display);
+  font-size: 1.4rem;
+  color: var(--ink);
+  margin-top: 0.15rem;
+}
+
+/* Figures (Vivado screenshots / didactic images). */
+.lab-figure {
+  margin: 1.25rem 0 0;
+}
+.lab-figure-img {
+  display: block;
+  width: 100%;
+  height: auto;
+  border: 1px solid var(--line);
+  border-radius: 10px;
+}
+.lab-figure-placeholder {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 2rem 1rem;
+  border: 1px dashed var(--line);
+  border-radius: 10px;
+  background: repeating-linear-gradient(
+    45deg,
+    var(--panel),
+    var(--panel) 10px,
+    #101c27 10px,
+    #101c27 20px
+  );
+  text-align: center;
+}
+.lab-figure-ph-icon {
+  font-size: 1.6rem;
+  opacity: 0.7;
+}
+.lab-figure-ph-alt {
+  color: var(--ink);
+  font-size: 0.92rem;
+  max-width: 34rem;
+}
+.lab-figure-ph-note {
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  color: var(--ink-soft);
+}
+.lab-figure-ph-note code {
+  color: var(--signal);
+}
+.lab-figure-cap {
+  margin-top: 0.5rem;
+  font-size: 0.82rem;
+  color: var(--ink-soft);
+  line-height: 1.5;
+}
+
+/* CPU vs FPGA instrument. */
+.cvf-controls {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+}
+@media (max-width: 560px) {
+  .cvf-controls {
+    grid-template-columns: 1fr;
+  }
+}
+.cvf-run {
+  margin: 0.5rem 0 1rem;
+  background: var(--signal);
+  color: #04171a;
+  border: none;
+  border-radius: 8px;
+  padding: 0.45rem 1.1rem;
+  font-family: var(--font-display);
+  font-weight: 600;
+  cursor: pointer;
+}
+.cvf-run:disabled {
+  opacity: 0.5;
+  cursor: default;
+}
+.cvf-lane {
+  margin: 0.75rem 0;
+}
+.cvf-lane-head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  margin-bottom: 0.35rem;
+}
+.cvf-lane-title {
+  font-family: var(--font-mono);
+  font-size: 0.78rem;
+  color: var(--ink-soft);
+}
+.cvf-badge {
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  font-weight: 600;
+  padding: 0.1rem 0.5rem;
+  border-radius: 999px;
+}
+.cvf-badge--cpu {
+  color: var(--brand-trace);
+  border: 1px solid var(--brand-trace);
+}
+.cvf-badge--fpga {
+  color: var(--signal);
+  border: 1px solid var(--signal);
+}
+/* Pipeline visualization: queue → unit/stages → done. */
+.cvf-pipe {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  flex-wrap: wrap;
+}
+.cvf-token {
+  display: inline-grid;
+  place-items: center;
+  border-radius: 6px;
+  font-family: var(--font-mono);
+  font-weight: 700;
+  transition: background 0.25s ease;
+}
+.cvf-token--sm {
+  width: 1.5rem;
+  height: 1.5rem;
+  font-size: 0.75rem;
+}
+.cvf-token--lg {
+  width: 2.2rem;
+  height: 2.2rem;
+  font-size: 0.95rem;
+}
+.cvf-empty {
+  color: var(--ink-soft);
+  opacity: 0.4;
+  font-family: var(--font-mono);
+}
+.cvf-unit {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.3rem;
+  padding: 0.5rem;
+  border: 2px solid var(--brand-trace);
+  border-radius: 10px;
+  min-width: 3.4rem;
+}
+.cvf-progress {
+  width: 2.6rem;
+  height: 5px;
+  border-radius: 3px;
+  background: var(--paper);
+  overflow: hidden;
+}
+.cvf-progress-fill {
+  height: 100%;
+  transition: width 0.3s ease;
+}
+.cvf-progress-fill--cpu {
+  background: var(--brand-trace);
+}
+.cvf-unit-label {
+  font-family: var(--font-mono);
+  font-size: 0.62rem;
+  color: var(--ink-soft);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+.cvf-stages {
+  display: flex;
+  gap: 0.35rem;
+}
+.cvf-stage {
+  width: 2.8rem;
+  height: 2.8rem;
+  display: grid;
+  place-items: center;
+  border: 2px solid var(--signal);
+  border-radius: 8px;
+  background: #0a121b;
+}
+.cvf-arrow {
+  color: var(--ink-soft);
+  font-family: var(--font-mono);
+}
+.cvf-done {
+  display: flex;
+  gap: 0.25rem;
+  flex-wrap: wrap;
+  flex: 1;
+  min-height: 1.5rem;
+  padding: 0.3rem;
+  border-radius: 8px;
+  background: rgba(62, 207, 142, 0.06);
+  border: 1px dashed var(--line);
+}
+.cvf-speedup {
+  margin-top: 0.85rem;
+  font-family: var(--font-mono);
+  font-size: 0.82rem;
+  color: var(--ink-soft);
+  line-height: 1.6;
+}
+.cvf-speedup strong {
+  color: var(--ink);
+}
+.cvf-speedup-x {
+  color: var(--signal) !important;
+  font-size: 1.15rem;
+}
+
+/* Switches → LEDs instrument. */
+.slsim-row-label {
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  color: var(--ink-soft);
+  margin: 0.5rem 0 0.3rem;
+}
+.slsim-row {
+  display: flex;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
+.slsim-cell {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.25rem;
+  width: 2.2rem;
+}
+.slsim-led {
+  width: 1.4rem;
+  height: 1.4rem;
+  border-radius: 50%;
+  border: 2px solid var(--ok);
+  background: #0a3f22;
+  transition: background 0.1s ease, box-shadow 0.1s ease;
+}
+.slsim-led--on {
+  background: var(--ok);
+  box-shadow: 0 0 8px var(--ok);
+}
+.slsim-idx {
+  font-family: var(--font-mono);
+  font-size: 0.68rem;
+  color: var(--ink-soft);
+}
+.slsim-sw {
+  width: 1.6rem;
+  height: 2.2rem;
+  border-radius: 5px;
+  border: 2px solid var(--brand-trace);
+  background: #0a121b;
+  cursor: pointer;
+  display: flex;
+  align-items: flex-end;
+  padding: 2px;
+  transition: background 0.1s ease;
+}
+.slsim-sw--on {
+  align-items: flex-start;
+  background: rgba(232, 131, 58, 0.18);
+}
+.slsim-knob {
+  display: block;
+  width: 100%;
+  height: 0.85rem;
+  border-radius: 3px;
+  background: var(--brand-trace);
+}
+.slsim-readout {
+  display: flex;
+  align-items: baseline;
+  gap: 1rem;
+  flex-wrap: wrap;
+  margin-top: 0.9rem;
+}
+.slsim-readout code {
+  font-family: var(--font-mono);
+  font-size: 0.95rem;
+  color: var(--signal);
+}
+.slsim-value {
+  font-family: var(--font-mono);
+  font-size: 0.8rem;
+  color: var(--ink-soft);
+}
+
+/* Development-flow instrument. */
+.devflow-track {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.35rem;
+  margin-bottom: 1rem;
+}
+.devflow-node-wrap {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+}
+.devflow-node {
+  background: var(--paper);
+  border: 1px solid var(--line);
+  color: var(--ink-soft);
+  border-radius: 8px;
+  padding: 0.4rem 0.7rem;
+  font-family: var(--font-mono);
+  font-size: 0.76rem;
+  cursor: pointer;
+  white-space: nowrap;
+}
+.devflow-node:hover {
+  border-color: var(--signal);
+  color: var(--ink);
+}
+.devflow-node--active {
+  background: var(--signal);
+  color: #04171a;
+  border-color: var(--signal);
+  font-weight: 600;
+}
+.devflow-arrow {
+  color: var(--ink-soft);
+  font-family: var(--font-mono);
+}
+.devflow-readout {
+  border: 1px solid var(--line);
+  border-left: 3px solid var(--signal);
+  border-radius: 10px;
+  background: var(--panel);
+  padding: 0.85rem 1rem;
+}
+.devflow-vivado {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+  margin-bottom: 0.5rem;
+}
+.devflow-tag {
+  font-family: var(--font-mono);
+  font-size: 0.68rem;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--signal);
+}
+.devflow-vivado code {
+  font-family: var(--font-mono);
+  font-size: 0.8rem;
+  color: var(--ink);
+  background: var(--paper);
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  padding: 0.1rem 0.45rem;
+}
+.devflow-what {
+  color: var(--ink);
+  line-height: 1.6;
+  margin: 0 0 0.5rem;
+  font-size: 0.92rem;
+}
+.devflow-why {
+  color: var(--ink-soft);
+  line-height: 1.55;
+  margin: 0;
+  font-size: 0.88rem;
+}
+.devflow-why strong {
+  color: var(--brand-trace);
+}
+.devflow-sim {
+  margin-top: 0.75rem;
+  padding-top: 0.7rem;
+  border-top: 1px dashed var(--line);
+}
+.devflow-sim code {
+  font-family: var(--font-mono);
+  font-size: 0.78rem;
+  color: var(--signal);
+  margin-left: 0.4rem;
+}
+.devflow-sim-text {
+  margin: 0.35rem 0 0;
+  color: var(--ink-soft);
+  font-size: 0.86rem;
+  line-height: 1.55;
 }

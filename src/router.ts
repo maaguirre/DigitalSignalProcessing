@@ -6,17 +6,20 @@ export type Route =
   | { name: "lecture"; id: number }
   | { name: "review" }
   | { name: "review-item"; slug: string }
-  | { name: "lab" };
+  | { name: "labs" }
+  | { name: "lab"; id: number };
 
 export function parseRoute(hash: string): Route {
   const path = hash.replace(/^#/, "");
   const lecture = path.match(/^\/lecture\/(\d+)$/);
   if (lecture) return { name: "lecture", id: Number(lecture[1]) };
+  const lab = path.match(/^\/lab\/(\d+)$/);
+  if (lab) return { name: "lab", id: Number(lab[1]) };
   const reviewItem = path.match(/^\/review\/([a-z0-9-]+)$/);
   if (reviewItem) return { name: "review-item", slug: reviewItem[1] };
   if (path === "/lectures") return { name: "lectures" };
   if (path === "/review") return { name: "review" };
-  if (path === "/lab") return { name: "lab" };
+  if (path === "/lab") return { name: "labs" };
   return { name: "home" };
 }
 
